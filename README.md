@@ -3,7 +3,7 @@ Nomadhys
 Application nomade pour Noethys,
 Le logiciel libre et gratuit de gestion multi-activités
 
-Application pour Android, iOS, Windows, Mac OS, Linux, Raspberry Pi.
+Pour Android, iOS, Windows, Mac OS, Linux, Raspberry Pi.
 
 Plus d'infos sur www.noethys.com
 
