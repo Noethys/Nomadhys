@@ -1,0 +1,137 @@
+#:kivy 1.8.0
+#:import ListAdapter kivy.adapters.listadapter.ListAdapter
+#:import lv kivy.uix.listview
+#:import Factory kivy.factory.Factory
+
+<CustomPopup>:
+    id: popup
+    size_hint: .5, .5
+    auto_dismiss: False
+    title: "IDindividu=%d" % self.dictIndividu["IDindividu"]
+	BoxLayout:
+	    orientation: 'vertical'
+		Image:
+			texture: popup.dictIndividu["photo"]
+		Button:
+			size_hint: 1, 0.2
+			text: 'Fermer'
+			on_release: root.dismiss()
+
+			
+[ThumbnailedListItem@SelectableView+BoxLayout]:
+    index: ctx.index
+    size_hint_y: ctx.size_hint_y
+    height: ctx.height
+    ListItemButton:
+        index: ctx.index
+        text: ctx.texte
+		background_color: [1, 1, 1, 1]
+		deselected_color: [1, 1, 1, 1]
+
+		
+<ListItem>:
+    height: '48sp'
+    size_hint: 1, None
+
+    #canvas:
+    #    Color:
+    #        rgb: .3, .3, .3
+    #    Rectangle:
+    #        pos: self.pos
+    #        size: self.width, 1
+
+    BoxLayout:
+        padding: 5, 0, 5, 0
+		
+        Button:
+            text: root.texte
+			on_release: root.clsListeIndividus.AfficherIndividu(root.index)
+
+        #Button:
+        #    text: '>'
+        #    size_hint_x: None
+        #    width: 50
+        #    on_release: root.clsListeIndividus.AfficherIndividu(root.index)
+
+			
+
+<ListeIndividus>:
+	name: 'liste_individus'
+    fullscreen: True
+	list_view: ctrl_listview
+	ctrl_recherche: ctrl_recherche
+	grid_alphabet: grid_alphabet
+	label_resultats: label_resultats
+    cols: 1
+    size_hint: 1, 1
+
+	GridLayout:
+		rows: 3
+		cols: 1
+
+        GridLayout:
+		    cols: 4
+			rows: 1
+			row_force_default: True
+			row_default_height: 40
+			spacing: 5, 5
+			padding: 5
+			height: self.row_default_height + 10
+			size_hint: 1, None
+				
+            Image:
+                source: 'images/recherche.png'
+                size_hint: None, None
+				width: 32
+				
+            TextInput:
+		        id: ctrl_recherche
+				multiline: False
+				#focused: True
+                size_hint: 1, None
+				font_size: 22
+		        text: ""
+				on_text_validate: root.Rechercher(self)
+
+            Button:
+			    id: bouton_recherche
+                size_hint: None, None
+				text: "Rechercher"
+				on_release: root.Rechercher(self)
+
+            Button:
+			    id: bouton_reinit_recherche
+                size_hint: None, None
+				text: "X"
+				width: 50
+				on_release: root.Reinit(self)
+
+				
+        ListView:
+		    id: ctrl_listview
+			padding: 5
+		    size_hint: 1, 1
+            #adapter: ListAdapter(data=root.data, args_converter=root.args_converter, template='ThumbnailedListItem')# selection_mode='single', template='ThumbnailedListItem', allow_empty_selection=True)
+			adapter: ListAdapter(data=root.data, args_converter=root.args_converter, cls=Factory.ListItem)
+			
+        GridLayout:
+			id: grid_alphabet
+		    cols: 1
+			rows: 1
+			row_force_default: True
+			row_default_height: 30
+			spacing: 5, 5
+			padding: 10
+			size_hint: 1, None
+			height: 50
+
+			canvas.before:
+				Color:
+					rgb: 0.128, 0.128, 0.128, 1
+				Rectangle:
+					pos: self.pos
+					size: self.size
+				
+			Label:
+				id: label_resultats
+				text: "Aucun individu"

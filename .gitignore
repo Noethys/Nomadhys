@@ -1,3 +1,11 @@
+# Nomadhys
+Travaux/
+Crypto/
+data/
+twisted/
+zope/
+Config.dat
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

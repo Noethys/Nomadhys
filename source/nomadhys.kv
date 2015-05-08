@@ -1,0 +1,72 @@
+#:kivy 1.8.0
+#:import Factory kivy.factory.Factory
+
+
+<ActionSpinnerOptions@SpinnerOption>
+    background_color: .4, .4, .4, 1
+
+<ActionSpinner@Spinner+ActionItem>
+    canvas.before:
+        Color:
+            rgba: 0.128, 0.128, 0.128, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    border: 27, 20, 12, 12
+    background_normal: 'atlas://data/images/defaulttheme/action_group'
+    option_cls: Factory.ActionSpinnerOptions
+
+<ActionDropdown>:
+    on_size: self.width = '220dp'
+
+<Page>:
+    ScrollView:
+        do_scroll_x: False
+        do_scroll_y: False if root.fullscreen else (content.height > root.height - dp(16))
+        AnchorLayout:
+            size_hint_y: None
+            height: root.height if root.fullscreen else max(root.height, content.height)
+            GridLayout:
+                id: content
+                cols: 1
+                spacing: '8dp'
+                padding: '8dp'
+                size_hint: (1, 1) if root.fullscreen else (.8, None)
+                height: self.height if root.fullscreen else self.minimum_height
+
+
+BoxLayout:
+    orientation: 'vertical'
+
+    canvas.before:
+        Color:
+            rgb: .9, .9, .9
+        Rectangle:
+            size: self.size
+            source: 'images/fond.jpg'
+
+    ActionBar:
+
+        ActionView:
+            id: av
+            ActionPrevious:
+                with_previous: (False if ctrl_multipages.current_screen.name == 'menu_principal' else True) if ctrl_multipages.current_screen else False
+				title: "Nomadhys"
+				color: (73/255., 136/255., 10/255., 1)
+                on_release: app.go_higherarchy_previous()
+
+            ActionSpinner:
+                id: ctrl_spinner
+                important: True
+				text: "Menu principal"
+                values: [app.dict_pages[code_page]["label"] for code_page in app.pages_spinner]
+                on_text:
+                    app.Afficher_page(label_page=args[1])
+
+    ScreenManager:
+        id: ctrl_multipages
+        on_current_screen:
+            code_page = args[1].name
+            if code_page in app.pages_spinner : ctrl_spinner.text = app.dict_pages[code_page]["label"]
+            app.higherarchy.append(code_page)
+		
