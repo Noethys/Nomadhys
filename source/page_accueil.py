@@ -109,7 +109,7 @@ Builder.load_string("""
 					
 					BitmapButtonVertical:
 						texte: 'Individus'
-						chemin_image: 'images/Personnes.png'
+						chemin_image: 'images/personnes.png'
 						on_release: app.Afficher_page('liste_individus')
 						disabled: 1 if not root.app.fichier_valide else 0
 						

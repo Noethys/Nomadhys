@@ -56,7 +56,7 @@ Builder.load_string("""
     text_size: self.size
     padding_x: -45
     Image:
-        source: "images/Personnes.png"
+        source: "images/personnes.png"
         center_y: root.center_y
         center_x: root.x + 25
         #x: root.x
