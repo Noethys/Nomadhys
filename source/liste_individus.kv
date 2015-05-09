@@ -41,7 +41,7 @@
     #        size: self.width, 1
 
     BoxLayout:
-        padding: 5, 0, 5, 0
+        padding: 0, 0, 0, 0
 		
         Button:
             text: root.texte
@@ -64,55 +64,57 @@
 	label_resultats: label_resultats
     cols: 1
     size_hint: 1, 1
+		
+	BoxLayout:
+		orientation: 'vertical'
+		
+		GridLayout:
+			rows: 3
+			cols: 1
+			padding: 10
+			
+			GridLayout:
+				cols: 4
+				rows: 1
+				row_force_default: True
+				row_default_height: 40
+				spacing: 10, 10
+				height: self.row_default_height + 20
+				size_hint: 1, None
+					
+				Image:
+					source: 'images/recherche.png'
+					size_hint: None, None
+					width: 32
+					
+				TextInput:
+					id: ctrl_recherche
+					multiline: False
+					#focused: True
+					size_hint: 1, None
+					font_size: 22
+					text: ""
+					on_text_validate: root.Rechercher(self)
 
-	GridLayout:
-		rows: 3
-		cols: 1
+				Button:
+					id: bouton_recherche
+					size_hint: None, None
+					text: "Rechercher"
+					on_release: root.Rechercher(self)
 
-        GridLayout:
-		    cols: 4
-			rows: 1
-			row_force_default: True
-			row_default_height: 40
-			spacing: 5, 5
-			padding: 5
-			height: self.row_default_height + 10
-			size_hint: 1, None
-				
-            Image:
-                source: 'images/recherche.png'
-                size_hint: None, None
-				width: 32
-				
-            TextInput:
-		        id: ctrl_recherche
-				multiline: False
-				#focused: True
-                size_hint: 1, None
-				font_size: 22
-		        text: ""
-				on_text_validate: root.Rechercher(self)
+				Button:
+					id: bouton_reinit_recherche
+					size_hint: None, None
+					text: "X"
+					width: 50
+					on_release: root.Reinit(self)
 
-            Button:
-			    id: bouton_recherche
-                size_hint: None, None
-				text: "Rechercher"
-				on_release: root.Rechercher(self)
-
-            Button:
-			    id: bouton_reinit_recherche
-                size_hint: None, None
-				text: "X"
-				width: 50
-				on_release: root.Reinit(self)
-
-				
-        ListView:
-		    id: ctrl_listview
-			padding: 5
-		    size_hint: 1, 1
-            #adapter: ListAdapter(data=root.data, args_converter=root.args_converter, template='ThumbnailedListItem')# selection_mode='single', template='ThumbnailedListItem', allow_empty_selection=True)
-			adapter: ListAdapter(data=root.data, args_converter=root.args_converter, cls=Factory.ListItem)
+					
+			ListView:
+				id: ctrl_listview
+				size_hint: 1, 1
+				#adapter: ListAdapter(data=root.data, args_converter=root.args_converter, template='ThumbnailedListItem')# selection_mode='single', template='ThumbnailedListItem', allow_empty_selection=True)
+				adapter: ListAdapter(data=root.data, args_converter=root.args_converter, cls=Factory.ListItem)
 			
         GridLayout:
 			id: grid_alphabet

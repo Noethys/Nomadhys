@@ -292,12 +292,12 @@ Builder.load_string("""
 			size_hint: 1, None
 			height: 50
 
-			#canvas.before:
-			#	Color:
-			#		rgb: 0.128, 0.128, 0.128, 1
-			#	Rectangle:
-			#		pos: self.pos
-			#		size: self.size
+			canvas.before:
+				Color:
+					rgb: 0.128, 0.128, 0.128, 1
+				Rectangle:
+					pos: self.pos
+					size: self.size
 
             BoutonAvecImageLarge:
                 id: bouton_enregistrer

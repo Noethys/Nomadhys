@@ -117,6 +117,7 @@ class Echo(protocol.Protocol):
         f.close()
         self.screen.EcritLog("Fin de l'envoi")
         self.screen.EcritLog("", log=False)
+        os.remove(self.nomFichierAenvoyer)
         
         # Ferme la connexion
         self.transport.loseConnection()
@@ -452,6 +453,7 @@ class Synchronisation(Screen):
                 else :
                     self.EcritLog("Transfert du fichier incomplet")
                 ftp.quit()
+                os.remove(nomFichier)
             except Exception, err :
                 self.EcritLog("Erreur dans l'envoi du fichier par FTP : " + err)
                 
@@ -536,9 +538,11 @@ class Synchronisation(Screen):
             self.EcritLog("Décryptage du fichier")
             if cryptage_mdp == "" :
                 self.EcritLog("Erreur : Décryptage impossible. Vous devez saisir le mot de passe dans les paramètres.")
+                os.remove(nomFichier)
                 return
             if UTILS_Cryptage_fichier.IMPORT_AES == False :
                 self.EcritLog("Erreur : Décryptage impossible. Le module de décryptage n'est pas disponible.")
+                os.remove(nomFichier)
                 return
             nouveauCheminFichier = nomFichier.replace(EXTENSION_CRYPTE, EXTENSION_DECRYPTE)
             resultat = UTILS_Cryptage_fichier.DecrypterFichier(nomFichier, nouveauCheminFichier, cryptage_mdp)
