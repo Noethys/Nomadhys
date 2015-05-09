@@ -100,6 +100,27 @@ Cette méthode est à utiliser si vous ne pouvez pas utiliser les deux méthodes
 
 """,),
 
+("Licence", """
+[color=a8ca2f][b]"Nomadhys, Application nomade pour Noethys"[/color][/b]
+
+Copyright © 2010-2015 Ivan LUCAS
+
+Ce programme est un logiciel libre ; vous pouvez le redistribuer 
+et/ou le modifier conformément aux dispositions de la Licence Publique
+Générale GNU, telle que publiée par la Free Software Foundation  ; 
+version 2 de la licence, ou encore toute version ultérieure.
+
+Ce programme est distribué dans l'espoir qu'il sera utile, mais SANS 
+AUCUNE GARANTIE ; sans même la garantie implicite de COMMERCIALISATION
+ou D'ADAPTATION A UN OBJET PARTICULIER. Pour plus de détails, voir la
+Licence Publique Générale GNU.
+
+Une version française non officielle de la licence GNU GPL peut être
+consultée à l'adresse suivante : http://www.april.org/gnu/gpl_french2.html.
+""",),
+
+
+
 ]
 
 

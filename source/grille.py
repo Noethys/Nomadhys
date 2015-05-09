@@ -929,7 +929,7 @@ class Grille(Screen):
         # Calcul de l'affichage des pages
         if self.nbreLignesParPage == 0 :
             return
-        nbrePages = int(len(listeInscriptionsAlpha) / self.nbreLignesParPage)
+        #nbrePages = int(len(listeInscriptionsAlpha) / self.nbreLignesParPage)
         
         self.dictLignesParPage = {}
         self.dictPageLignes = {}
@@ -949,6 +949,12 @@ class Grille(Screen):
                 numLigne = 0
         #print "self.dictLignesParPage =", self.dictLignesParPage
         
+        nbrePages = len(self.dictLignesParPage)
+        #print "nbrePages=", nbrePages
+        #print "self.nbreLignesParPage=", self.nbreLignesParPage
+        #print "len(self.dictLignesParPage)=", len(self.dictLignesParPage)
+        #print "len(self.dictPageLignes)=", len(self.dictPageLignes)
+
         # Remplissage des contrôles
         for numLigne in range(0, self.nbreLignesParPage) :
             
@@ -1015,9 +1021,9 @@ class Grille(Screen):
                 case.opacity = 0
         
         # Ajustement du slider
-        self.slider_pages.value = self.pageActuelle
         self.slider_pages.max = nbrePages
-        
+        self.slider_pages.value = self.pageActuelle
+
         # Affichage du chrono
         #temps = str(time.time()-t1)
         #print("Temps d'actualisation de la page =" + temps)
