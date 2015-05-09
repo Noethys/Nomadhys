@@ -30,7 +30,7 @@ os.chdir(runpath)
 
 # Definition de l'icon app
 from kivy.config import Config
-Config.set('kivy', 'window_icon', 'images/logo.png')
+Config.set('kivy', 'window_icon', 'icon.png')
 
 from page_accueil import PageAccueil
 from liste_individus import ListeIndividus
@@ -43,7 +43,7 @@ from aide import Aide
 class Nomadhys(App):
     pages_spinner = ListProperty([])
     higherarchy = ListProperty([])
-    icon = "images/logo.png"
+    icon = "icon.png"
     dictPhotos = DictProperty({})
     fichier_valide = BooleanProperty(False) 
     IDfichier = StringProperty() 
@@ -54,9 +54,13 @@ class Nomadhys(App):
         self.title = "Nomadhys"
         print "Repertoire user_data_dir =", self.user_data_dir
         
-        self.ctrl_multipages = self.root.ids.ctrl_multipages
+        # Verifie si fichier de config bien genere
+        config = UTILS_Config.Config()
+        config.Verification()
+        config.Close() 
         
 		# Init pages
+        self.ctrl_multipages = self.root.ids.ctrl_multipages
         self.dict_pages = {
             "menu_principal" : {"label" : "Menu principal", "source" : "", "page" : PageAccueil(app=self)},
             "liste_individus" : {"label" : "Individus", "source" : "", "page" : ListeIndividus(app=self)},
@@ -80,15 +84,6 @@ class Nomadhys(App):
         
         # Binds
         Window.bind(on_keyboard=self.OnKey)
-        
-    def on_pause(self):
-        return True
-
-    def on_resume(self):
-        pass
-
-    def on_stop(self):
-        pass		
 						
     def Afficher_page(self, code_page="", label_page="", direction='left'):
         if self.code_page == "consommations" :
@@ -180,6 +175,9 @@ class Nomadhys(App):
 
     def Quitter(self, obj=None):
         MsgBox.question(text="Souhaitez-vous vraiment quitter Nomadhys ?", title="Quitter", yes_callback=lambda: self.stop(), size_hint=(0.6, 0.6))	
+        
+    def on_resume(self):
+        pass
     
     def on_pause(self):
         if self.code_page == "consommations" :

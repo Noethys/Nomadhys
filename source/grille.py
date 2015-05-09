@@ -56,7 +56,7 @@ Builder.load_string("""
     text_size: self.size
     padding_x: -45
     Image:
-        source: "Images/Personnes.png"
+        source: "images/Personnes.png"
         center_y: root.center_y
         center_x: root.x + 25
         #x: root.x
@@ -71,7 +71,7 @@ Builder.load_string("""
     markup: True
     halign: 'left'
     valign: 'top'
-    
+    disabled: not self.opacity
     
     
 <BoutonCase>:
@@ -90,6 +90,7 @@ Builder.load_string("""
     text_size: self.width-6, self.height-2
     on_release: self.on_release
     on_press: self.on_press
+    disabled: not self.opacity
 
     Label:
         id: label_groupe
@@ -238,7 +239,8 @@ Builder.load_string("""
                 size_hint: None, 1
                 width: 60
                 opacity: 1 if slider_pages.max > 1 else 0
-                                  
+                disabled: self.opacity != 1
+                
                 BoutonTransparent:
                     id: bouton_navigation_nom
                     on_release: root.on_bouton_navigation_nom()
@@ -424,7 +426,7 @@ class BoutonCase(Button):
             
             # Etat
             if etat in ("present", "absenti", "absentj") :
-                self.image_etat.source = source="Images/%s.png" % etat
+                self.image_etat.source = source="images/%s.png" % etat
                 self.image_etat.opacity = 1
                 
             # Groupe
@@ -1066,7 +1068,7 @@ class Grille(Screen):
         from selection_date import SelectionDate
         date = self.dateDebut
         popup = SelectionDate(title="Sélectionnez une date", date=date, callback=self.Selection_date, size_hint=(0.8, 0.8))
-        popup.open()   
+        popup.open() 
             
     def Selection_date(self, date=None, refreshGrille=True):
         self.dateDebut = date

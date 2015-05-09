@@ -25,7 +25,7 @@ from kivy.utils import get_color_from_hex
 
 class SelectionDate(Popup):
     def __init__(self, *args, **kwargs):
-        super(Popup, self).__init__(*args, **kwargs)	
+        super(SelectionDate, self).__init__(*args, **kwargs)	
         self.bind(on_dismiss=self.on_dismiss)
         
         self.callback = kwargs.pop("callback", None)

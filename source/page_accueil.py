@@ -193,7 +193,7 @@ class PageAccueil(Screen):
         # Si aucun IDfichier chargé
         if IDfichier == "" :
             self.bouton_fichier.texte = "[color=ff3333]Aucun fichier[/color]\nSaisissez un IDfichier dans les paramètres"
-            self.bouton_fichier.logo.texture = UTILS_Images.GetTextureFromFichier("images/Erreur.png")
+            self.bouton_fichier.logo.texture = UTILS_Images.GetTextureFromFichier("images/erreur.png")
             self.app.fichier_valide = False
             self.app.IDfichier = ""
             return
@@ -222,7 +222,7 @@ class PageAccueil(Screen):
         else :
             # Si IDfichier ok mais aucun fichier présent
             self.bouton_fichier.texte = "[color=ff3333]IDfichier saisi[/color]\nSynchronisez maintenant pour recevoir la base"
-            self.bouton_fichier.logo.texture = UTILS_Images.GetTextureFromFichier("images/Erreur.png")
+            self.bouton_fichier.logo.texture = UTILS_Images.GetTextureFromFichier("images/erreur.png")
             self.app.fichier_valide = False
             self.app.IDfichier = IDfichier
         DB.Close() 

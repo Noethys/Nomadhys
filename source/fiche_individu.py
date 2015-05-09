@@ -111,10 +111,10 @@ class FicheIndividu(Screen):
 		# Photo
         photo = self.dictIndividu["photo"]
         if photo == None :
-            if self.dictIndividu["IDcivilite"] == 1 : photo = UTILS_Images.GetTextureFromFichier("images/Homme.png")
-            if self.dictIndividu["IDcivilite"] in (2, 3) : photo = UTILS_Images.GetTextureFromFichier("images/Femme.png")
-            if self.dictIndividu["IDcivilite"] == 4 : photo = UTILS_Images.GetTextureFromFichier("images/Garcon.png")
-            if self.dictIndividu["IDcivilite"] == 5 : photo = UTILS_Images.GetTextureFromFichier("images/Fille.png")
+            if self.dictIndividu["IDcivilite"] == 1 : photo = UTILS_Images.GetTextureFromFichier("images/homme.png")
+            if self.dictIndividu["IDcivilite"] in (2, 3) : photo = UTILS_Images.GetTextureFromFichier("images/femme.png")
+            if self.dictIndividu["IDcivilite"] == 4 : photo = UTILS_Images.GetTextureFromFichier("images/garcon.png")
+            if self.dictIndividu["IDcivilite"] == 5 : photo = UTILS_Images.GetTextureFromFichier("images/fille.png")
             
         if photo != None :
             ctrl_image = Image(texture=photo, size_hint_x=None)
@@ -123,7 +123,7 @@ class FicheIndividu(Screen):
         box_base.add_widget(ctrl_box_haut)
         
         # Onglets
-        ctrl_onglets = TabbedPanel(do_default_tab=False, tab_pos='top_left') # Vertical=left_bottom
+        ctrl_onglets = TabbedPanel(do_default_tab=False, padding=10, tab_pos='top_left') # Vertical=left_bottom
         box_base.add_widget(ctrl_onglets)
 		
         liste_onglets = [

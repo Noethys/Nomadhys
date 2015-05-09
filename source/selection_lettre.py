@@ -21,7 +21,7 @@ from kivy.utils import get_color_from_hex
 
 Builder.load_string("""
 
-<Popup>:
+<SelectionLettre>:
     box_base: box_base
     tableau_lettres: tableau_lettres
     
@@ -56,7 +56,7 @@ class TableauLettres(GridLayout):
 
 class SelectionLettre(Popup):
     def __init__(self, *args, **kwargs):
-        super(Popup, self).__init__(*args, **kwargs)	
+        super(SelectionLettre, self).__init__(*args, **kwargs)	
         self.bind(on_dismiss=self.on_dismiss)
         self.callback = kwargs.pop("callback", None)
         

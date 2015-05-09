@@ -19,6 +19,30 @@ import UTILS_Divers
 #runpath = os.path.dirname(os.path.realpath(sys.argv[0]))
 #os.chdir(runpath)
 
+
+def GenerationIDappareil():
+    """ Generation d'un ID pour l'appareil """
+    IDappareil = ""
+    for x in range(0, 6) :
+        IDappareil += random.choice("ABCDEFGH23456789")
+    return IDappareil
+
+    
+LISTE_VALEURS = (
+    ("general", "nom_appareil", ""),
+    ("general", "ID_appareil", GenerationIDappareil()),
+    ("fichier", "ID", ""),
+    ("synchronisation", "serveur_adresse", ""),
+    ("synchronisation", "serveur_port", ""),
+    ("synchronisation", "ftp_hote", ""),
+    ("synchronisation", "ftp_identifiant", ""),
+    ("synchronisation", "ftp_mdp", ""),
+    ("synchronisation", "ftp_repertoire", ""),
+    ("synchronisation", "cryptage_activer", ""),
+    ("synchronisation", "cryptage_mdp", ""),
+    ("synchronisation", "type_transfert", ""),
+    )
+    
 class Config():
     def __init__(self):
         rep = UTILS_Divers.GetRepData()
@@ -28,31 +52,16 @@ class Config():
         # Ouverture du fichier
         if self.config.read(self.nomFichier) == [] :
             self.Creation() 
-        
+
     def Creation(self):
         """ Création du fichier si n'existe pas """
-        self.dirty = True
-        
-        # Section general
-        self.config.add_section("general")
-        self.config.set("general", "nom_appareil", "")
-        self.config.set("general", "ID_appareil", GenerationIDappareil())
-        
-        # Section Fichier
-        self.config.add_section("fichier")
-        self.config.set("fichier", "ID", "")
-        
-        # Synchronisation
-        self.config.add_section("synchronisation")
-        self.config.set("synchronisation", "serveur_adresse", "")
-        self.config.set("synchronisation", "serveur_port", "")
-        self.config.set("synchronisation", "ftp_hote", "")
-        self.config.set("synchronisation", "ftp_identifiant", "")
-        self.config.set("synchronisation", "ftp_mdp", "")
-        self.config.set("synchronisation", "ftp_repertoire", "")
-        self.config.set("synchronisation", "cryptage_activer", "")
-        self.config.set("synchronisation", "cryptage_mdp", "")
-        self.config.set("synchronisation", "type_transfert", "")
+        for section, option, valeur in LISTE_VALEURS : 
+            self.Ecrire(section, option, valeur)
+    
+    def Verification(self):
+        """ Verifie si toutes les valeurs ont ete crees """
+        for section, option, valeur in LISTE_VALEURS : 
+            self.Lire(section, option, valeur)
     
     def Close(self):
         """ Sauvegarde du fichier """
@@ -83,12 +92,7 @@ class Config():
             valeur = self.config.get(section, option)
         return valeur
     
-def GenerationIDappareil():
-    """ Genereation d'un ID pour l'appareil """
-    IDappareil = ""
-    for x in range(0, 6) :
-        IDappareil += random.choice("ABCDEFGH23456789")
-    return IDappareil
+    
     
     
     

@@ -67,7 +67,7 @@ Builder.load_string("""
 class SelectionNom(Popup):
     ctrl_recherche = ObjectProperty() 
     def __init__(self, *args, **kwargs):
-        super(Popup, self).__init__(*args, **kwargs)	
+        super(SelectionNom, self).__init__(*args, **kwargs)	
         self.bind(on_dismiss=self.on_dismiss)
         self.callback = kwargs.pop("callback", None)
         self.ctrl_recherche.focus = True
