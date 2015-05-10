@@ -49,14 +49,24 @@ class Nomadhys(App):
     IDfichier = StringProperty() 
     IDutilisateur = NumericProperty(0)
     nomUtilisateur = StringProperty() 
+    mdpUtilisateur = StringProperty() 
     
     def build(self):
         self.title = "Nomadhys"
         print "Repertoire user_data_dir =", self.user_data_dir
         
-        # Verifie si fichier de config bien genere
+        # Config
         config = UTILS_Config.Config()
+        
+        # Verifie si fichier de config bien genere
         config.Verification()
+        
+        # Importe le code utilisateur si besoin
+        memoriser_code = config.Lire(section="utilisateur", option="memoriser_code", defaut="")
+        code_utilisateur = config.Lire(section="utilisateur", option="code", defaut="")
+        if memoriser_code == "1" and code_utilisateur != "" :
+            self.VerifieMdp(mdp=code_utilisateur, silencieux=True)
+
         config.Close() 
         
 		# Init pages
@@ -118,7 +128,7 @@ class Nomadhys(App):
         # Chargement de la page
         self.Charger_page(code_page, direction=direction)
     
-    def VerifieMdp(self, mdp="", code_page=None):
+    def VerifieMdp(self, mdp="", code_page=None, silencieux=False):
         # Vérification du mot de passe utilisateur
         DB = GestionDB.DB() 
         req = "SELECT IDutilisateur, nom, prenom FROM utilisateurs WHERE mdp='%s';" % mdp
@@ -128,11 +138,13 @@ class Nomadhys(App):
         if len(listeDonnees) > 0 :
             self.IDutilisateur, nom, prenom = listeDonnees[0]
             self.nomUtilisateur = "%s %s" % (nom, prenom)
+            self.mdpUtilisateur = mdp
         else :
             self.IDutilisateur == 0
             self.nomUtilisateur = ""
+            mdpUtilisateur = ""
         
-        if self.IDutilisateur == 0 :
+        if self.IDutilisateur == 0 and silencieux == False :
             MsgBox.info(text="Le mot de passe utilisateur n'est pas valide !", title="Accès refusé", size_hint=(0.6, 0.6))
             return
             
@@ -180,15 +192,26 @@ class Nomadhys(App):
         pass
     
     def on_pause(self):
-        if self.code_page == "consommations" :
-            self.dict_pages["consommations"]["page"].Enregistrer()
+        self.Enregistrer()
         return True
         
     def on_stop(self):
+        self.Enregistrer()
+        return True
+    
+    def Enregistrer(self):
+        # Sauvegarde des consommations
         if self.code_page == "consommations" :
             self.dict_pages["consommations"]["page"].Enregistrer()
-        return True
-
+        # Sauvegarde de l'utilisateur
+        config = UTILS_Config.Config()
+        memoriser_code = config.Lire(section="utilisateur", option="memoriser_code", defaut="")
+        if memoriser_code == "1" and self.mdpUtilisateur != "" :
+            config.Ecrire(section="utilisateur", option="code", valeur=self.mdpUtilisateur)
+        else :
+            config.Ecrire(section="utilisateur", option="code", valeur="")
+        config.Close() 
+        
     def OnKey(self, window, key, *args):
         """ Pour intercepter le bouton Retour de Android """
         if key == 27:

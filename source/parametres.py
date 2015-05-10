@@ -64,6 +64,17 @@ JSON_GENERAL = [
 		"section": "general",
 		"key": "ID_appareil",
 	},
+	{
+		"type": "title",
+		"title": "Utilisateur"
+    },
+	{
+		"type": "bool",
+		"title": "Mémoriser l'utilisateur",
+		"desc": "Permet à l'utilisateur d'éviter de saisir son code personnel à chaque ouverture.",
+		"section": "utilisateur",
+		"key": "memoriser_code",
+	},
 
     ]
 

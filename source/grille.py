@@ -428,7 +428,10 @@ class BoutonCase(Button):
             if etat in ("present", "absenti", "absentj") :
                 self.image_etat.source = source="images/%s.png" % etat
                 self.image_etat.opacity = 1
-                
+            else :
+                self.image_etat.source = ""
+                self.image_etat.opacity = 0
+            
             # Groupe
             IDgroupe = self.dictConso["IDgroupe"]
             nomGroupe = self.grille.dictGroupes[IDgroupe]["nom"]
@@ -458,7 +461,7 @@ class BoutonCase(Button):
             
     def on_press(self, *args):
         self.long_click = False
-        Clock.schedule_once(self.ChronoClick, 1) # Temps du long click = 1 seconde
+        Clock.schedule_once(self.ChronoClick, 1) # Temps du long click en secondes
     
     def ChronoClick(self, dt):
         self.long_click = True
@@ -492,8 +495,9 @@ class BoutonCase(Button):
             # Suppression
             else :
                 # Protection anti-suppression
-                #if self.dictConso["etat"] in ("present", "absenti", "absentj") and self.grille.etat not in ("present", "absenti", "absentj") :
-                #    MsgBox.info(text="Vous ne pouvez pas supprimer une consommation pointée !", title="Erreur", size_hint=(0.6, 0.6))
+                if self.dictConso["etat"] in ("present", "absenti", "absentj") and self.grille.etat not in ("present", "absenti", "absentj") :
+                    MsgBox.info(text="Vous ne pouvez pas supprimer une consommation pointée !", title="Erreur", size_hint=(0.6, 0.6))
+                    return
                 self.SupprimerConso()
             
     
@@ -901,7 +905,7 @@ class Grille(Screen):
                 dictCasesLigne["unites"][IDunite] = ctrl_case
             
             # Mémo journalier
-            ctrl_memo = BoutonMemo(text="", size_hint=(0.5, None), height=hauteur_ligne, grille=self)
+            ctrl_memo = BoutonMemo(text="", size_hint=(1, None), height=hauteur_ligne, grille=self)
             self.box_cases.add_widget(ctrl_memo)
             dictCasesLigne["memo"] = ctrl_memo
             
@@ -1357,6 +1361,7 @@ class Grille(Screen):
         
         
 class MyApp(App):
+    IDutilisateur = None
     def build(self):
         mainView = Grille(app=self)
         mainView.IDactivite = 1

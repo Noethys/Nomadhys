@@ -31,7 +31,12 @@ def GenerationIDappareil():
 LISTE_VALEURS = (
     ("general", "nom_appareil", ""),
     ("general", "ID_appareil", GenerationIDappareil()),
+    
     ("fichier", "ID", ""),
+    
+    ("utilisateur", "memoriser_code", ""),
+    ("utilisateur", "code", ""),
+    
     ("synchronisation", "serveur_adresse", ""),
     ("synchronisation", "serveur_port", ""),
     ("synchronisation", "ftp_hote", ""),
