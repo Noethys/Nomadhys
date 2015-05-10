@@ -257,10 +257,10 @@ class DetailConso(Popup):
             
             if self.grille.dictUnites[self.dictConso["IDunite"]]["heure_debut_fixe"] == 1 :
                 self.ctrl_heure_debut.disabled = True
-                bouton_horloge_heure_debut.disabled = True
+                self.bouton_horloge_heure_debut.disabled = True
             if self.grille.dictUnites[self.dictConso["IDunite"]]["heure_fin_fixe"] == 1 :
                 self.ctrl_heure_fin.disabled = True
-                bouton_horloge_heure_fin.disabled = True
+                self.bouton_horloge_heure_fin.disabled = True
             
             # Quantité
             if self.dictConso["quantite"] != None :

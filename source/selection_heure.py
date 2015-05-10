@@ -138,17 +138,17 @@ Builder.load_string("""
                 on_release: root.on_bouton_chiffre(self.chiffre)
 
             Button: 
-                text: 'Annuler'
-                on_release: root.dismiss()
+                text: 'Valider'
+                on_release: root.Valider()
 
             BoutonChiffre: 
                 chiffre: 0
                 on_release: root.on_bouton_chiffre(self.chiffre)
                 
             Button: 
-                text: 'Valider'
-                on_release: root.Valider()
-        
+                text: 'Annuler'
+                on_release: root.dismiss()
+                
 """)
 
 class CaseAffichage(Button):
