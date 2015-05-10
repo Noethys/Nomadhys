@@ -142,7 +142,7 @@ class Nomadhys(App):
         else :
             self.IDutilisateur == 0
             self.nomUtilisateur = ""
-            mdpUtilisateur = ""
+            self.mdpUtilisateur = ""
         
         if self.IDutilisateur == 0 and silencieux == False :
             MsgBox.info(text="Le mot de passe utilisateur n'est pas valide !", title="Accès refusé", size_hint=(0.6, 0.6))

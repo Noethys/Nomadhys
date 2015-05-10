@@ -764,7 +764,16 @@ class Grille(Screen):
                 "IDcompte_payeur":IDcompte_payeur, "IDprestation":IDprestation, "forfait":forfait, "quantite":quantite, "IDfamille":IDfamille, 
                 }
             self.dictConso[(IDinscription, date, IDunite)] = dictTemp
-        
+
+        # Importation des titulaires
+        req = """SELECT IDfamille, nom
+        FROM titulaires;"""
+        DB.ExecuterReq(req)
+        listeTemp = DB.ResultatReq()
+        self.dictTitulaires = {}
+        for IDfamille, nom in listeTemp :
+            self.dictTitulaires[IDfamille] = nom
+            
         # Importation des inscriptions
         req = """SELECT IDinscription, inscriptions.IDindividu, IDfamille, IDcompte_payeur, IDgroupe, IDcategorie_tarif,
         individus.nom, individus.prenom
@@ -776,6 +785,7 @@ class Grille(Screen):
         listeTemp = DB.ResultatReq()
         self.listeInscriptions = []
         self.dictInscriptions = {}
+        dictTempInscriptions = {}
         for IDinscription, IDindividu, IDfamille, IDcompte_payeur, IDgroupe, IDcategorie_tarif, nom, prenom in listeTemp :
             if prenom == None : prenom = ""
             nomComplet = nom + " " + prenom
@@ -785,7 +795,19 @@ class Grille(Screen):
                 }
             self.listeInscriptions.append(dictTemp)
             self.dictInscriptions[IDinscription] = dictTemp
-        
+            
+            # Pour trouver les rattachements multiples
+            if dictTempInscriptions.has_key(IDindividu) == False :
+                dictTempInscriptions[IDindividu] = []
+            dictTempInscriptions[IDindividu].append((IDfamille, IDinscription))
+
+        for IDindividu, listeFamilles in dictTempInscriptions.iteritems() :
+            if len(listeFamilles) > 1 :
+                for IDfamille, IDinscription in listeFamilles :
+                    nomTitulaires = self.dictTitulaires[IDfamille] 
+                    nomComplet = self.dictInscriptions[IDinscription]["nomComplet"] + "\n[size=12][color=c0c0c0](" + nomTitulaires + ")[/color][/size]"
+                    self.dictInscriptions[IDinscription]["nomComplet"] = nomComplet
+
         # Mémos journaliers
         req = """SELECT IDmemo, IDindividu, date, texte
         FROM memo_journee 
@@ -894,7 +916,7 @@ class Grille(Screen):
             dictCasesLigne = {"entete":None, "unites":{}, "memo":None}
             
             # Case entete de ligne
-            ctrl_entete = LabelEnteteLigne(text="", size_hint=(1, None), height=hauteur_ligne)
+            ctrl_entete = LabelEnteteLigne(text="", size_hint=(1, None), height=hauteur_ligne, markup=True, halign="center")
             self.box_cases.add_widget(ctrl_entete)
             dictCasesLigne["entete"] = ctrl_entete
             
