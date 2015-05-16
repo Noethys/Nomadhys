@@ -435,7 +435,7 @@ class Synchronisation(Screen):
             
         # Transfert : Envoyer
         if action == "envoyer" :
-            self.EcritLog("Génération du fichier a envoyer")
+            self.EcritLog("Génération du fichier à envoyer")
             nomFichier = GenerationFichierAenvoyer()
             if nomFichier == None :
                 self.EcritLog("Erreur : Aucun fichier à générer")
@@ -471,7 +471,7 @@ class Synchronisation(Screen):
             for nomFichier in ftp.nlst() :
                 if nomFichier.startswith("data_%s" % IDfichier) and (nomFichier.endswith(EXTENSION_CRYPTE) or nomFichier.endswith(EXTENSION_DECRYPTE)) :
                     tailleFichier = ftp.size(nomFichier) 
-                    nomFichierFinal = "temp/" + nomFichier
+                    nomFichierFinal = self.app.user_data_dir + nomFichier
                     ftp.retrbinary("RETR %s" % nomFichier, open(nomFichierFinal, "wb").write) 
                     listeFichiersRecus.append((nomFichierFinal, tailleFichier))
             ftp.quit()
@@ -482,7 +482,7 @@ class Synchronisation(Screen):
                 if os.path.getsize(nomFichierFinal) != tailleFichier :
                     self.EcritLog("Transfert du fichier '%s' incomplet" % nomFichierFinal)
                 else :
-                    self.EcritLog("Fichier '%s' receptionné avec succès" % nomFichierFinal)
+                    self.EcritLog("Fichier réceptionné avec succès")
                     self.ReceptionFichier(nomFichierFinal)
                 
                 

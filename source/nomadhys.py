@@ -15,6 +15,7 @@ from os.path import dirname, join
 from kivy.properties import NumericProperty, StringProperty, BooleanProperty, ListProperty, DictProperty, ObjectProperty
 from kivy.clock import Clock
 from kivy.core.window import Window
+#Window.softinput_mode = "pan"
 
 from msgbox import MsgBox
 from saisie_mdp import SaisieMdp
@@ -53,7 +54,7 @@ class Nomadhys(App):
     
     def build(self):
         self.title = "Nomadhys"
-        print "Repertoire user_data_dir =", self.user_data_dir
+        print "Repertoire user_data_dir =", self.user_data_dir        
         
         # Config
         config = UTILS_Config.Config()

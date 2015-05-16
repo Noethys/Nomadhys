@@ -77,8 +77,8 @@ sur l'application.
 
 Lancez Noethys sur un ordinateur avec l'option "Serveur Internet/WIFI" activé (Menu Outil > Synchroniser Nomadhys).
 Le cadre "Serveur Nomadhys" de la page d'accueil affiche un IP local et un IP internet. Si vous êtes sur le réseau
-WIFI de cet ordinateur, reportez cet IP dans Les paramètres de connexion de Nomadhys, sinon reportez l'IP internet.
-Allez ensuite sur **Nomadhys** > **Synchronisation** puis cliquez sue le bouton **Recevoir** pour récupérer les données
+WIFI de cet ordinateur, reportez l'IP locale dans Les paramètres de connexion de Nomadhys, sinon reportez l'IP internet.
+Allez ensuite sur **Nomadhys** > **Synchronisation** puis cliquez sur le bouton **Recevoir** pour récupérer les données
 de Noethys ou sur **Envoyer** pour envoyer les modifications à Noethys.
 
 **B- Transfert par FTP :**

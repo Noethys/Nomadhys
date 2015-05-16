@@ -46,7 +46,9 @@ Builder.load_string("""
     spinner_groupe: spinner_groupe
     ctrl_heure_debut: ctrl_heure_debut
     ctrl_heure_fin: ctrl_heure_fin
+    ctrl_quantite_moins: ctrl_quantite_moins
     ctrl_quantite: ctrl_quantite
+    ctrl_quantite_plus: ctrl_quantite_plus
     bouton_horloge_heure_debut: bouton_horloge_heure_debut
     bouton_horloge_heure_fin: bouton_horloge_heure_fin
     size_hint: None, None
@@ -263,9 +265,14 @@ class DetailConso(Popup):
                 self.bouton_horloge_heure_fin.disabled = True
             
             # Quantité
-            if self.dictConso["quantite"] != None :
-                self.ctrl_quantite.text = str(self.dictConso["quantite"])
-            
+            if self.grille.dictUnites[self.dictConso["IDunite"]]["type"] == "Unitaire" :
+                if self.dictConso["quantite"] != None :
+                    self.ctrl_quantite.text = str(self.dictConso["quantite"])
+            else :
+                self.ctrl_quantite_moins.disabled = 1
+                self.ctrl_quantite.disabled = 1
+                self.ctrl_quantite_plus.disabled = 1
+                
             # Remplissage du contrôle Groupe
             self.liste_groupes = []
             nomGroupeSelection = None

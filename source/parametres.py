@@ -40,7 +40,7 @@ JSON_GENERAL = [
 		"title": "Fichier"
     },
 	{
-		"type": "string",
+		"type": "chaine",
 		"title": "ID du fichier",
 		"desc": "Reportez ici l'ID du fichier de données que vous trouverez dans Noethys (Menu Fichier > Informations > IDfichier). Attention, n'oubliez pas les 3 dernières lettres en majuscules.",
 		"section": "fichier",
@@ -51,14 +51,14 @@ JSON_GENERAL = [
 		"title": "Appareil"
     },
 	{
-		"type": "string",
+		"type": "chaine",
 		"title": "Nom de l'appareil",
 		"desc": "Exemple : 'Ma tablette 1'",
 		"section": "general",
 		"key": "nom_appareil",
 	},
 	{
-		"type": "string",
+		"type": "chaine",
 		"title": "ID de l'appareil",
 		"desc": "Exemple : 'ABC123'. Il est déconseillé de modifier ce paramètre généré automatiquement.",
 		"section": "general",
@@ -85,14 +85,14 @@ JSON_SYNCHRONISATION = [
 		"title": "Serveur Internet/WIFI"
 	},
 	{
-		"type": "string",
+		"type": "chaine",
 		"title": "Adresse",
 		"desc": "Adresse du serveur",
 		"section": "synchronisation",
 		"key": "serveur_adresse",
 	},
 	{
-		"type": "string",
+		"type": "chaine",
 		"title": "Port",
 		"desc": "Port de communication avec le serveur",
 		"section": "synchronisation",
@@ -103,14 +103,14 @@ JSON_SYNCHRONISATION = [
 		"title": "FTP"
 	},
 	{
-		"type": "string",
+		"type": "chaine",
 		"title": "Adresse",
 		"desc": "Exemple : 'ftp.monadresse.com'",
 		"section": "synchronisation",
 		"key": "ftp_hote",
 	},
 	{
-		"type": "string",
+		"type": "chaine",
 		"title": "Identifiant",
 		"desc": "Exemple : 'monidentifiant'",
 		"section": "synchronisation",
@@ -124,7 +124,7 @@ JSON_SYNCHRONISATION = [
 		"key": "ftp_mdp",
 	},
 	{
-		"type": "string",
+		"type": "chaine",
 		"title": "Repertoire",
 		"desc": "Exemple : 'www/mesfichiers'",
 		"section": "synchronisation",
@@ -156,11 +156,15 @@ JSON_SYNCHRONISATION = [
         
 Builder.load_string(
 '''
+<SettingChaine>:
+    Label:
+        text: '' if root.value == None else root.value
+
 <SettingPassword>:
     Label:
         text: '' if root.value == '' else '********'
 ''')
-         
+
 class SettingPassword(SettingItem):
     popup = ObjectProperty(None, allownone=True)
     textinput = ObjectProperty(None)
@@ -188,12 +192,68 @@ class SettingPassword(SettingItem):
         popup_width = min(0.95 * Window.width, dp(500))
         self.popup = popup = Popup(
             title=self.title, content=content, size_hint=(None, None),
-            size=(popup_width, '250dp'))
+            size=(popup_width, '250dp'), pos_hint={'center_x': 0.5, 'top': 0.9})
 
         # create the textinput used for numeric input
         self.textinput = textinput = TextInput(
             text=self.value, font_size='24sp', multiline=False,
             size_hint_y=None, height='42sp', password=True)
+        textinput.bind(on_text_validate=self._validate)
+        self.textinput = textinput
+
+        # construct the content, widget are used as a spacer
+        content.add_widget(Widget())
+        content.add_widget(textinput)
+        content.add_widget(Widget())
+        content.add_widget(SettingSpacer())
+
+        # 2 buttons are created for accept or cancel the current value
+        btnlayout = BoxLayout(size_hint_y=None, height='50dp', spacing='5dp')
+        btn = Button(text='Ok')
+        btn.bind(on_release=self._validate)
+        btnlayout.add_widget(btn)
+        btn = Button(text='Cancel')
+        btn.bind(on_release=self._dismiss)
+        btnlayout.add_widget(btn)
+        content.add_widget(btnlayout)
+
+        # all done, open the popup !
+        popup.open()
+
+        
+class SettingChaine(SettingItem):
+    popup = ObjectProperty(None, allownone=True)
+    textinput = ObjectProperty(None)
+
+    def on_panel(self, instance, value):
+        if value is None:
+            return
+        self.bind(on_release=self._create_popup)
+
+    def _dismiss(self, *largs):
+        if self.textinput:
+            self.textinput.focus = False
+        if self.popup:
+            self.popup.dismiss()
+        self.popup = None
+
+    def _validate(self, instance):
+        self._dismiss()
+        value = self.textinput.text.strip()
+        self.value = value
+
+    def _create_popup(self, instance):
+        # create popup layout
+        content = BoxLayout(orientation='vertical', spacing='5dp')
+        popup_width = min(0.95 * Window.width, dp(500))
+        self.popup = popup = Popup(
+            title=self.title, content=content, size_hint=(None, None),
+            size=(popup_width, '250dp'), pos_hint={'center_x': 0.5, 'top': 0.9})
+
+        # create the textinput used for numeric input
+        self.textinput = textinput = TextInput(
+            text=self.value, font_size='24sp', multiline=False,
+            size_hint_y=None, height='42sp')
         textinput.bind(on_text_validate=self._validate)
         self.textinput = textinput
 
@@ -231,6 +291,7 @@ class Popup_parametres(Popup):
 
         self.settings = Settings()
         self.settings.register_type('password', SettingPassword)
+        self.settings.register_type('chaine', SettingChaine)
         
         if "general" in self.pages : self.settings.add_json_panel("Généralités", config, data=json.dumps(JSON_GENERAL, encoding="utf-8"))
         if "synchronisation" in self.pages : self.settings.add_json_panel("Synchronisation", config, data=json.dumps(JSON_SYNCHRONISATION, encoding="utf-8"))
