@@ -9,6 +9,7 @@
 # Licence:         Licence GNU GPL                           #
 ##############################################################
 
+from kivy.logger import Logger
 import os
 import json
 import time
@@ -338,7 +339,7 @@ class Synchronisation(Screen):
         self.app = kwargs.get("app", None)
         super(Screen, self).__init__(*args, **kwargs)	
         self.ctrl_etat.text = ""
-        print ">>>>>>", self.app.user_data_dir
+        
         # Récupération du type de transfert préféré
         config = UTILS_Config.Config()
         type_transfert = config.Lire(section="synchronisation", option="type_transfert", defaut="")

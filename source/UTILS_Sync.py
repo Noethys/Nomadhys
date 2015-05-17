@@ -13,6 +13,7 @@ import GestionDB
 import time
 import datetime
 import json
+from kivy.logger import Logger
 
 
 def AjouterAction(nomTable="", typeAction="", dictAction={}):

@@ -11,6 +11,7 @@
 
 import datetime
 import time
+from kivy.logger import Logger
 
 
 def DateEngFr(textDate):

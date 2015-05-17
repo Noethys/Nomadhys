@@ -9,11 +9,13 @@
 # Licence:         Licence GNU GPL                           #
 ##############################################################
 
+from kivy.logger import Logger
+
 try :
     from Crypto.Cipher import AES
     IMPORT_AES = True
 except:
-    print "Crypto.Cipher.AES non disponible"
+    Logger.warning('Application: Crypto.Cipher.AES non disponible')
     IMPORT_AES = False
     
 import hashlib

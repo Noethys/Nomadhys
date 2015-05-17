@@ -9,8 +9,15 @@
 # Licence:         Licence GNU GPL                           #
 ##############################################################
 
-from time import time
+# Logger.info('Application: This is a info message.')
+# logging levels : trace, debug, info, warning, error and critical
+
+
+import time
+HEURE_CHARGEMENT = time.time() 
+
 from kivy.app import App
+from kivy.logger import Logger
 from os.path import dirname, join
 from kivy.properties import NumericProperty, StringProperty, BooleanProperty, ListProperty, DictProperty, ObjectProperty
 from kivy.clock import Clock
@@ -25,6 +32,7 @@ import UTILS_Images
 import UTILS_Config
 import os
 import sys
+
 
 runpath = os.path.dirname(os.path.realpath(sys.argv[0]))
 os.chdir(runpath)
@@ -54,7 +62,8 @@ class Nomadhys(App):
     
     def build(self):
         self.title = "Nomadhys"
-        print "Repertoire user_data_dir =", self.user_data_dir        
+        Logger.info('Application: Repertoire user_data_dir = %s' % self.user_data_dir )
+        
         
         # Config
         config = UTILS_Config.Config()
@@ -73,11 +82,11 @@ class Nomadhys(App):
 		# Init pages
         self.ctrl_multipages = self.root.ids.ctrl_multipages
         self.dict_pages = {
-            "menu_principal" : {"label" : "Menu principal", "source" : "", "page" : PageAccueil(app=self)},
-            "liste_individus" : {"label" : "Individus", "source" : "", "page" : ListeIndividus(app=self)},
-            "consommations" : {"label" : "Consommations", "source" : "", "page" : Grille(app=self)},
-            "synchronisation" : {"label" : "Synchronisation", "source" : "", "page" : Synchronisation(app=self)},
-            "aide" : {"label" : "Aide", "source" : "", "page" : Aide()},
+            "menu_principal" : {"label" : "Menu principal", "page" : PageAccueil(app=self)},
+            "liste_individus" : {"label" : "Individus", "page" : ListeIndividus(app=self)},
+            "consommations" : {"label" : "Consommations", "page" : Grille(app=self)},
+            "synchronisation" : {"label" : "Synchronisation", "page" : Synchronisation(app=self)},
+            "aide" : {"label" : "Aide", "page" : Aide()},
             }
 
 		# Init spinner de l'actionBar
@@ -95,6 +104,9 @@ class Nomadhys(App):
         
         # Binds
         Window.bind(on_keyboard=self.OnKey)
+        
+        TEMPS_CHARGEMENT = time.time() - HEURE_CHARGEMENT
+        Logger.info('Application: Temps de chargement = %s' % TEMPS_CHARGEMENT )
 						
     def Afficher_page(self, code_page="", label_page="", direction='left'):
         if self.code_page == "consommations" :
@@ -163,11 +175,6 @@ class Nomadhys(App):
         # Recherche de la page
         if self.dict_pages[code_page]["page"] != None :
             page = self.dict_pages[code_page]["page"]
-        else :
-            if source.endswith(".kv") : 
-                page = Builder.load_file(self.dict_pages[code_page]["source"])
-            else :
-                page = Builder.load_string(self.dict_pages[code_page]["source"])
                 
         # Actualisation de l'affichage
         self.dict_pages[code_page]["page"] = page

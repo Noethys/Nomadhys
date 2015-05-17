@@ -11,6 +11,7 @@
 
 import kivy
 from kivy.app import App
+from kivy.logger import Logger
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty
 from kivy.uix.button import Button
@@ -119,6 +120,7 @@ Builder.load_string("""
         
 <BoutonAvecImageLarge>:
 	text: ''
+    font_size: 15
 	size_hint: 1, 1
     taille_image: (22, 22) # (None, None) pour avoir taille originale de l'image
     
@@ -162,6 +164,7 @@ Builder.load_string("""
 		Label:
             id: ctrl_label
 			text: root.texte
+            font_size: root.font_size
             #halign: 'left'
             valign: 'middle'
             #text_size: self.width, self.height
@@ -288,6 +291,7 @@ class BoutonAvecImageLarge(Button):
     texte = StringProperty()
     chemin_image = StringProperty()
     taille_image = ListProperty()
+    font_size = NumericProperty()
     def __init__(self, *args, **kwargs):
         super(BoutonAvecImageLarge, self).__init__(*args, **kwargs)	
         

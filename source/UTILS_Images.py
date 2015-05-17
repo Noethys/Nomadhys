@@ -9,6 +9,7 @@
 # Licence:         Licence GNU GPL                           #
 ##############################################################
 
+from kivy.logger import Logger
 try:
     from StringIO import StringIO
 except ImportError:

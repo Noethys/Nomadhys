@@ -10,6 +10,7 @@
 ##############################################################
 
 from kivy.app import App
+from kivy.logger import Logger
 from kivy.lang import Builder
 from kivy.properties import StringProperty, ListProperty, NumericProperty, ObjectProperty, DictProperty
 from kivy.uix.screenmanager import Screen

@@ -11,6 +11,7 @@
 
 import kivy
 from kivy.app import App
+from kivy.logger import Logger
 from kivy.lang import Builder
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup

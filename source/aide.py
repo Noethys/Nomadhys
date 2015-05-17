@@ -10,12 +10,13 @@
 ##############################################################
 
 from kivy.app import App
+from kivy.logger import Logger
 from kivy.lang import Builder
 from kivy.uix.popup import Popup
 from kivy.properties import ObjectProperty
 from kivy.uix.screenmanager import Screen
 from kivy.uix.rst import RstDocument
-from kivy.uix.tabbedpanel import TabbedPanelItem
+from kivy.uix.tabbedpanel import TabbedPanelItem, TabbedPanelHeader
 
 LISTE_TEXTES = [
 ("Commencer", """
@@ -136,6 +137,7 @@ Builder.load_string("""
             id: tab_aide
             do_default_tab: False
             tab_width: 150
+            font_size: 15
             padding: 10
                                 
         GridLayout:
@@ -179,9 +181,15 @@ class Aide(Screen):
             return
         listeOnglets = []
         for titre, texte in LISTE_TEXTES :
-            onglet = TabbedPanelItem(text=titre)
-            doc = RstDocument(text=texte)
-            onglet.add_widget(doc)
+            #onglet = TabbedPanelItem(text=titre)
+            #doc = RstDocument(text=texte)
+            #onglet.add_widget(doc)
+            
+            onglet = TabbedPanelHeader(text=titre)
+            onglet.font_size = 15
+            onglet.content = RstDocument(text=texte)
+      
+            
             self.tab_aide.add_widget(onglet)
             listeOnglets.append(onglet)
         self.tab_aide.switch_to(listeOnglets[0])

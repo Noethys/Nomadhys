@@ -11,6 +11,7 @@
 
 import kivy
 from kivy.app import App
+from kivy.logger import Logger
 from kivy.lang import Builder
 from kivy.uix.label import Label
 from kivy.uix.button import Button
@@ -139,6 +140,7 @@ Builder.load_string("""
 
             Button: 
                 text: 'Valider'
+                font_size: 15
                 on_release: root.Valider()
 
             BoutonChiffre: 
@@ -147,6 +149,7 @@ Builder.load_string("""
                 
             Button: 
                 text: 'Annuler'
+                font_size: 15
                 on_release: root.dismiss()
                 
 """)

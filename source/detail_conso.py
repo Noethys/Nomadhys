@@ -10,6 +10,7 @@
 ##############################################################
 
 import kivy
+from kivy.logger import Logger
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.button import Button
@@ -51,8 +52,8 @@ Builder.load_string("""
     ctrl_quantite_plus: ctrl_quantite_plus
     bouton_horloge_heure_debut: bouton_horloge_heure_debut
     bouton_horloge_heure_fin: bouton_horloge_heure_fin
-    size_hint: None, None
-    size: 700, 470
+    size_hint: 0.8, 0.8
+    #size: 700, 470
     
     BoxLayout:
         orientation: 'vertical'
@@ -66,6 +67,7 @@ Builder.load_string("""
             
             Label: 
                 text: "Horaires :"
+                font_size: 15
                 size_hint: 0.2, None
                 height: 50
                 
@@ -98,6 +100,7 @@ Builder.load_string("""
 
             Label: 
                 text: "Quantité :"
+                font_size: 15
                 size_hint: 0.2, None
                 height: 50
                 
@@ -127,6 +130,7 @@ Builder.load_string("""
                     
             Label: 
                 text: "Etat :"
+                font_size: 15
                 size_hint: 0.2, None
             
             GridLayout:
@@ -134,6 +138,7 @@ Builder.load_string("""
                 
                 ToggleButton:
                     id: bouton_etat_reservation
+                    font_size: 15
                     text: 'Réservation'
                     group: 'etat'
                     state: 'down' if root.etat == 'reservation' else 'normal'
@@ -141,6 +146,7 @@ Builder.load_string("""
 
                 ToggleButton:
                     id: bouton_etat_attente
+                    font_size: 15
                     text: 'Attente'
                     group: 'etat'
                     state: 'down' if root.etat == 'attente' else 'normal'
@@ -148,6 +154,7 @@ Builder.load_string("""
 
                 ToggleButton:
                     id: bouton_etat_refus
+                    font_size: 15
                     text: 'Refus'
                     group: 'etat'
                     state: 'down' if root.etat == 'refus' else 'normal'
@@ -155,6 +162,7 @@ Builder.load_string("""
 
                 ToggleButton:
                     id: bouton_etat_present
+                    font_size: 15
                     text: 'Présent'
                     group: 'etat'
                     state: 'down' if root.etat == 'present' else 'normal'
@@ -162,6 +170,7 @@ Builder.load_string("""
 
                 ToggleButton:
                     id: bouton_etat_absentj
+                    font_size: 15
                     text: 'Absence justifiée'
                     group: 'etat'
                     state: 'down' if root.etat == 'absentj' else 'normal'
@@ -169,6 +178,7 @@ Builder.load_string("""
 
                 ToggleButton:
                     id: bouton_etat_absenti
+                    font_size: 15
                     text: 'Absence injustifiée'
                     group: 'etat'
                     state: 'down' if root.etat == 'absenti' else 'normal'
@@ -177,11 +187,13 @@ Builder.load_string("""
 
             Label: 
                 text: "Groupe :"
+                font_size: 15
                 size_hint: 0.2, None
                 height: 50
             
             Spinner:
                 id: spinner_groupe
+                font_size: 15
                 values: [nom for ordre, nom, IDactivite in root.liste_groupes]
                 size_hint: 1, None
                 height: 50
@@ -204,6 +216,7 @@ Builder.load_string("""
             
             Button:
                 text: 'Supprimer'
+                font_size: 15
                 on_release: root.Supprimer() 
             
             Label:
@@ -211,10 +224,12 @@ Builder.load_string("""
                 
             Button:
                 text: 'Ok'
+                font_size: 15
                 on_release: root.Valider() 
                 
             Button:
                 text: 'Annuler'
+                font_size: 15
                 on_release: root.dismiss() 
             
             

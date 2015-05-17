@@ -11,6 +11,7 @@
 
 
 from kivy.app import App
+from kivy.logger import Logger
 from kivy.properties import StringProperty, ListProperty, NumericProperty, ObjectProperty, BooleanProperty
 from kivy.uix.screenmanager import Screen
 from kivy.uix.button import Button
@@ -61,6 +62,7 @@ Builder.load_string("""
 		Label:
 			id: label_bouton
 			text: root.texte
+            font_size: 15
 			height: 20
 			size_hint: 1, None
 			

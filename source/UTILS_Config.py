@@ -15,6 +15,7 @@ import os
 import sys
 import random
 import UTILS_Divers
+from kivy.logger import Logger
 
 #runpath = os.path.dirname(os.path.realpath(sys.argv[0]))
 #os.chdir(runpath)

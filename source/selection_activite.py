@@ -11,6 +11,7 @@
 
 import kivy
 from kivy.app import App
+from kivy.logger import Logger
 from kivy.lang import Builder
 from kivy.adapters.dictadapter import DictAdapter, ListAdapter
 from kivy.uix.listview import ListItemButton, ListItemLabel, CompositeListItem, ListView

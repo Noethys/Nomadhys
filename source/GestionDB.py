@@ -16,7 +16,7 @@ import time
 import UTILS_Config
 import UTILS_Divers
 import sys
-
+from kivy.logger import Logger
 
 DICO_TABLES = {
 
@@ -108,7 +108,7 @@ class DB:
                 if "actions" in nomFichier :
                     creerTables = True
                 else :
-                    print("Le fichier '%s' n'existe pas" % nomFichier)
+                    Logger.error("Application: Le fichier '%s' n'existe pas" % nomFichier)
                     self.echec = 1
                     return
         
@@ -117,7 +117,7 @@ class DB:
             self.connexion = sqlite3.connect(nomFichier.encode('utf-8'))
             self.cursor = self.connexion.cursor()
         except:
-            print("La connexion avec la base de donnees SQLITE a echouee :", sys.exc_info()[0])
+            Logger.error("Application: La connexion avec la base de donnees SQLITE a echouee :" % sys.exc_info()[0])
             self.erreur = err
             self.echec = 1
         else:
@@ -140,7 +140,7 @@ class DB:
         try :
             self.cursor.execute(req)
         except:
-            print("Requete SQL incorrecte :", sys.exc_info()[0])
+            Logger.error("Application: Requete SQL incorrecte : %s" % sys.exc_info()[0])
             return 0
         else:
             return 1
@@ -196,7 +196,7 @@ class DB:
             self.cursor.execute("SELECT last_insert_rowid() FROM %s" % nomTable)
             newID = self.cursor.fetchall()[0][0]
         except :
-            print("Requete sql d'INSERT incorrecte :", sys.exc_info()[0])
+            Logger.error("Application: Requete sql d'INSERT incorrecte : %s" % sys.exc_info()[0])
         return newID
     
     def InsertPhoto(self, IDindividu=None, blobPhoto=None):
@@ -239,6 +239,7 @@ class DB:
             self.Commit()
         except :
             print("Requete sql de mise a jour incorrecte :", sys.exc_info()[0])
+            Logger.error("Application: Requete sql de mise a jour incorrecte : %s" % sys.exc_info()[0])
         
     def ReqDEL(self, nomTable, nomChampID, ID):
         """ Suppression d'un enregistrement """
@@ -247,7 +248,7 @@ class DB:
             self.cursor.execute(req)
             self.Commit()
         except :
-            print("Requete sql de suppression incorrecte :", sys.exc_info()[0])
+            Logger.error("Application: Requete sql de suppression incorrecte : %s" % sys.exc_info()[0])
             
     def IsTableExists(self, nomTable=""):
         """ Verifie si une table donnee existe dans la base """

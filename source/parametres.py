@@ -11,6 +11,7 @@
 
 
 from kivy.app import App
+from kivy.logger import Logger
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
@@ -321,9 +322,7 @@ class Popup_parametres(Popup):
                 
 class MyApp(App):
     def build(self):
-        a = App()
-        print ">>>>>>>>>>>>>>>>>", a.user_data_dir
-    
+        a = App()    
         popup = Popup_parametres(callback=self.Test)
         popup.open()  
 

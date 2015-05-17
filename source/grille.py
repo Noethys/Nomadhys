@@ -10,6 +10,7 @@
 ##############################################################
 
 from kivy.app import App
+from kivy.logger import Logger
 from kivy.lang import Builder
 from kivy.properties import StringProperty, ListProperty, NumericProperty, ObjectProperty, DictProperty, BooleanProperty
 from kivy.uix.screenmanager import Screen
@@ -68,6 +69,7 @@ Builder.load_string("""
                         
 <BoutonMemo>:
     text_size: self.width-15, self.height-2
+    font_size: 15
     markup: True
     halign: 'left'
     valign: 'top'
@@ -141,6 +143,7 @@ Builder.load_string("""
             Button:
                 id: ctrl_date
                 text: 'Date'
+                font_size: 15
                 markup: True
                 size_hint: (0.2, None)
                 height: 50
@@ -149,6 +152,7 @@ Builder.load_string("""
             Button:
                 id: ctrl_activite
                 text: 'Activite'
+                font_size: 15
                 markup: True
                 size_hint: (0.5, None)
                 height: 50
@@ -157,6 +161,7 @@ Builder.load_string("""
             Button:
                 id: ctrl_etat
                 text: 'Mode de saisie'
+                font_size: 15
                 markup: True
                 size_hint: (0.3, None)
                 height: 50
@@ -302,6 +307,7 @@ Builder.load_string("""
             BoutonAvecImageLarge:
                 id: bouton_enregistrer
                 texte: 'Enregistrer'
+                font_size: 15
                 chemin_image: 'images/enregistrer.png'
                 disabled: len(root.listeModifications) == 0
                 on_release: root.on_bouton_enregistrer()
@@ -309,6 +315,7 @@ Builder.load_string("""
             BoutonAvecImageLarge:
                 id: bouton_annuler
                 texte: 'Annuler'
+                font_size: 15
                 chemin_image: 'images/annuler.png'
                 disabled: len(root.listeModifications) == 0
                 on_release: root.on_bouton_annuler()
@@ -316,6 +323,7 @@ Builder.load_string("""
             BoutonAvecImageLarge:
                 id: bouton_afficher_inscrits
                 texte: 'Inscrits'
+                font_size: 15
                 chemin_image: 'images/filtre.png'
                 disabled: root.IDactivite == None
                 on_release: root.on_bouton_afficher_inscrits()
@@ -323,6 +331,7 @@ Builder.load_string("""
             BoutonAvecImageLarge:
                 id: bouton_afficher_presents
                 texte: 'Présents'
+                font_size: 15
                 chemin_image: 'images/filtre.png'
                 disabled: root.IDactivite == None
                 on_release: root.on_bouton_afficher_presents()
@@ -330,6 +339,7 @@ Builder.load_string("""
             BoutonAvecImageLarge:
                 id: bouton_afficher_totaux
                 texte: 'Totaux'
+                font_size: 15
                 chemin_image: 'images/total.png'
                 disabled: root.IDactivite == None
                 on_release: root.on_bouton_afficher_totaux()
@@ -337,6 +347,7 @@ Builder.load_string("""
             BoutonAvecImageLarge:
                 id: bouton_ajouter_individu
                 texte: 'Ajouter'
+                font_size: 15
                 chemin_image: 'images/ajouter_individu.png'
                 disabled: root.IDactivite == None
                 on_release: root.on_bouton_ajouter_inscription()
@@ -894,7 +905,7 @@ class Grille(Screen):
         self.box_cases = GridLayout(cols=len(self.listeUnites)+2, row_force_default=True, row_default_height=hauteur_ligne, size_hint=(1, 1), spacing=(5, 5))
         self.box_grille.add_widget(self.box_cases)
         
-        ctrl_label = Label(text="", size_hint=(1, None))
+        ctrl_label = Label(text="", size_hint=(1, None), font_size=15)
         self.box_cases.add_widget(ctrl_label)
         
         for IDunite in self.listeUnites :
@@ -916,7 +927,7 @@ class Grille(Screen):
             dictCasesLigne = {"entete":None, "unites":{}, "memo":None}
             
             # Case entete de ligne
-            ctrl_entete = LabelEnteteLigne(text="", size_hint=(1, None), height=hauteur_ligne, markup=True, halign="center")
+            ctrl_entete = LabelEnteteLigne(text="", size_hint=(1, None), font_size=15, height=hauteur_ligne, markup=True, halign="center")
             self.box_cases.add_widget(ctrl_entete)
             dictCasesLigne["entete"] = ctrl_entete
             

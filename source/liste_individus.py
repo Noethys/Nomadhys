@@ -9,6 +9,7 @@
 # Licence:         Licence GNU GPL                           #
 ##############################################################
 
+from kivy.logger import Logger
 from kivy.uix.modalview import ModalView
 from kivy.uix.listview import ListView
 from kivy.uix.gridlayout import GridLayout
