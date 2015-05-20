@@ -128,6 +128,7 @@ consultée à l'adresse suivante : http://www.april.org/gnu/gpl_french2.html.
 
 Builder.load_string("""
 <Aide>
+    name: 'aide'
     tab_aide: tab_aide
     
     BoxLayout:

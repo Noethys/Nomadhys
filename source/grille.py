@@ -120,6 +120,7 @@ Builder.load_string("""
 
         
 <Grille>:
+    name: 'consommations'
     box_base: box_base
     slider_pages: slider_pages
     ctrl_date: ctrl_date
@@ -1332,6 +1333,7 @@ class Grille(Screen):
             MsgBox.info(text="Il n'existe aucune modification à annuler !", title="Annuler", size_hint=(0.6, 0.6))
             
     def Annuler(self):
+        self.listeModifications = []
         self.Draw_grille(importer=True) 
         self.AfficherPresents() 
     

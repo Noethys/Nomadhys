@@ -173,14 +173,14 @@ class Nomadhys(App):
     
     def Charger_page(self, code_page="", direction='left'):
         # Recherche de la page
-        if self.dict_pages[code_page]["page"] != None :
-            page = self.dict_pages[code_page]["page"]
-                
+        page = self.dict_pages[code_page]["page"]
+        
         # Actualisation de l'affichage
         self.dict_pages[code_page]["page"] = page
         self.code_page = code_page
         page.MAJ() 
         self.ctrl_multipages.switch_to(page, direction=direction)
+        
         return page
 
     def go_higherarchy_previous(self):

@@ -230,6 +230,7 @@ from widgets import BoutonAvecImageLarge_fond_normal
 Builder.load_string("""
 
 <Synchronisation>
+    name: 'synchronisation'
     log_sync: log_sync
     progress: progress
     ctrl_etat: ctrl_etat
@@ -569,7 +570,7 @@ class Synchronisation(Screen):
         f.close()
         fichierZip.close()
         os.remove(nouveauCheminFichier)
-        self.EcritLog("Fichier reçu installé avec succès")
+        self.EcritLog("Fichier installé avec succès")
         
         # Suppression des fichiers d'actions obsolètes
         DB = GestionDB.DB()
