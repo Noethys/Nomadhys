@@ -280,7 +280,7 @@ class DetailConso(Popup):
                 self.bouton_horloge_heure_fin.disabled = True
             
             # Quantité
-            if self.grille.dictUnites[self.dictConso["IDunite"]]["type"] == "Unitaire" :
+            if self.grille.dictUnites[self.dictConso["IDunite"]]["type"] == "Quantite" :
                 if self.dictConso["quantite"] != None :
                     self.ctrl_quantite.text = str(self.dictConso["quantite"])
             else :

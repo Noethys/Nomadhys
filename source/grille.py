@@ -456,7 +456,7 @@ class BoutonCase(Button):
             elif typeUnite == "Horaire" :
                 detail = self.dictConso["heure_debut"] + "\n" + self.dictConso["heure_fin"]
             elif typeUnite == "Quantite" :
-                detail = str(self.quantite)
+                detail = str(self.dictConso["quantite"])
             else :
                 detail = ""
             self.text = detail #str(self.dictConso["IDconso"])# pour les tests 
@@ -1323,8 +1323,8 @@ class Grille(Screen):
         DB.Close()             
                     
         self.listeModifications = []
-        self.dictConsoInitial = copy.deepcopy(self.dictConso)     
-        self.dictMemosInitial = copy.deepcopy(self.dictMemos)
+        self.dictConsoInitial = copy.copy(self.dictConso)     
+        self.dictMemosInitial = copy.copy(self.dictMemos)
                     
     def on_bouton_annuler(self):
         if len(self.listeModifications) > 0 :
