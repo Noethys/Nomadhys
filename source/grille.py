@@ -1349,12 +1349,15 @@ class Grille(Screen):
         # Unités
         for (IDinscription, date, IDunite), dictConso in self.dictConso.iteritems() :
             if dictConso["etat"] in ("reservation", "present"):
+                quantite = dictConso["quantite"]
+                if quantite == None :
+                    quantite = 1
                 IDgroupe = dictConso["IDgroupe"]
                 if dictResultats.has_key(IDunite) == False :
                     dictResultats[IDunite] = {}
                 if dictResultats[IDunite].has_key(IDgroupe) == False :
                     dictResultats[IDunite][IDgroupe] = 0
-                dictResultats[IDunite][IDgroupe] += 1
+                dictResultats[IDunite][IDgroupe] += quantite
         
         # Recherche des noms de groupes
         listeGroupes = []
@@ -1371,7 +1374,6 @@ class Grille(Screen):
             ligne.append(nomGroupe)
         ligne.append("Total")
         donnees.append(ligne)
-        
         
         # Unités
         for IDunite in self.listeUnites :   
