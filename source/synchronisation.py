@@ -470,23 +470,26 @@ class Synchronisation(Screen):
                 self.EcritLog("Erreur de connexion : Vérifiez les paramètres FTP !")
                 return
             # Récupère la liste des fichiers de synchronisation présents sur le répertoire FTP
-            for nomFichier in ftp.nlst() :
-                if nomFichier.startswith("data_%s" % IDfichier) and (nomFichier.endswith(EXTENSION_CRYPTE) or nomFichier.endswith(EXTENSION_DECRYPTE)) :
-                    tailleFichier = ftp.size(nomFichier) 
-                    nomFichierFinal = self.app.user_data_dir + nomFichier
-                    ftp.retrbinary("RETR %s" % nomFichier, open(nomFichierFinal, "wb").write) 
-                    listeFichiersRecus.append((nomFichierFinal, tailleFichier))
-            ftp.quit()
-            if len(listeFichiersRecus) == 0 :
-                self.EcritLog("Aucun fichier dans le répertoire FTP")
+            try :
+                for nomFichier in ftp.nlst() :
+                    if nomFichier.startswith("data_%s" % IDfichier) and (nomFichier.endswith(EXTENSION_CRYPTE) or nomFichier.endswith(EXTENSION_DECRYPTE)) :
+                        tailleFichier = ftp.size(nomFichier) 
+                        nomFichierFinal = self.app.user_data_dir + nomFichier
+                        ftp.retrbinary("RETR %s" % nomFichier, open(nomFichierFinal, "wb").write) 
+                        listeFichiersRecus.append((nomFichierFinal, tailleFichier))
+                ftp.quit()
+                if len(listeFichiersRecus) == 0 :
+                    self.EcritLog("Aucun fichier dans le répertoire FTP")
+                    return
+                for nomFichierFinal, tailleFichier in listeFichiersRecus :
+                    if os.path.getsize(nomFichierFinal) != tailleFichier :
+                        self.EcritLog("Transfert du fichier '%s' incomplet" % nomFichierFinal)
+                    else :
+                        self.EcritLog("Fichier réceptionné avec succès")
+                        self.ReceptionFichier(nomFichierFinal)
+            except Exception, err :
+                self.EcritLog("Erreur de reception FTP : %s" % err)
                 return
-            for nomFichierFinal, tailleFichier in listeFichiersRecus :
-                if os.path.getsize(nomFichierFinal) != tailleFichier :
-                    self.EcritLog("Transfert du fichier '%s' incomplet" % nomFichierFinal)
-                else :
-                    self.EcritLog("Fichier réceptionné avec succès")
-                    self.ReceptionFichier(nomFichierFinal)
-                
                 
     def StartManuel(self, action="envoyer"):
         # Transfert : Envoyer
