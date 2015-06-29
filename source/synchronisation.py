@@ -474,7 +474,7 @@ class Synchronisation(Screen):
                 for nomFichier in ftp.nlst() :
                     if nomFichier.startswith("data_%s" % IDfichier) and (nomFichier.endswith(EXTENSION_CRYPTE) or nomFichier.endswith(EXTENSION_DECRYPTE)) :
                         tailleFichier = ftp.size(nomFichier) 
-                        nomFichierFinal = self.app.user_data_dir + nomFichier
+                        nomFichierFinal = UTILS_Divers.GetRepData() + nomFichier
                         ftp.retrbinary("RETR %s" % nomFichier, open(nomFichierFinal, "wb").write) 
                         listeFichiersRecus.append((nomFichierFinal, tailleFichier))
                 ftp.quit()
