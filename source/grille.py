@@ -1268,7 +1268,7 @@ class Grille(Screen):
             IDmemo = dictMemo["IDmemo"]
             donnees = {"IDindividu" : key[0], "date" : key[1], "texte" : texte}
             if self.dictMemosInitial.has_key(key) :
-                if texte == "" :
+                if texte == "" and len(self.dictMemosInitial[key]["texte"])>0 :
                     listeActionsMemos.append(("supprimer", donnees))
                 else :
                     if self.dictMemosInitial[key]["texte"] != texte :
@@ -1301,8 +1301,6 @@ class Grille(Screen):
             req = "INSERT INTO memo_journee (%s) VALUES (%s)" % (", ".join(listeChampsActions), ", ".join(["?" for x in range(len(listeChampsActions))]))
             DB.Executermany(req, listeAjouts, commit=False)
             DB.Commit()
-            DB.Close()             
-
             
         # Consommations
         if len(listeActionsConsommations) > 0 :
