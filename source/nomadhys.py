@@ -27,6 +27,13 @@ from kivy.core.window import Window
 from msgbox import MsgBox
 from saisie_mdp import SaisieMdp
 
+try :
+    from Crypto.Hash import SHA256
+    IMPORT_SHA256 = True
+except:
+    Logger.warning('Application: Crypto.Hash.SHA256 non disponible')
+    IMPORT_SHA256 = False
+
 import GestionDB
 import UTILS_Images
 import UTILS_Config
@@ -143,8 +150,12 @@ class Nomadhys(App):
     
     def VerifieMdp(self, mdp="", code_page=None, silencieux=False):
         # Vérification du mot de passe utilisateur
-        DB = GestionDB.DB() 
-        req = "SELECT IDutilisateur, nom, prenom FROM utilisateurs WHERE mdp='%s';" % mdp
+        if IMPORT_SHA256 :
+            mdpcrypt = SHA256.new(mdp.encode('utf-8')).hexdigest()
+        else :
+            mdpcrypt = ""
+        DB = GestionDB.DB()
+        req = "SELECT IDutilisateur, nom, prenom FROM utilisateurs WHERE mdp='%s' or mdp='%s';" % (mdpcrypt, mdp)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close() 
