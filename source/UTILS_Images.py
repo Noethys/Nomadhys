@@ -23,7 +23,7 @@ import os
     
 		
 def TextureFromPyImage(pyImg):
-    raw = pyImg.tostring()
+    raw = pyImg.tobytes()
     width, height = pyImg.size
     imdata = ImageData(width, height, 'rgb', raw)
     texture = Texture.create_from_data(imdata)
@@ -58,14 +58,14 @@ def GetTextureFromFichier(nomFichier):
     
     
 def ConvertirImagePNG(fichier="") :
-    # Chargement de l'image à convertir
+    # Chargement de l'image ï¿½ convertir
     return False
 
 
 def ConvertirToutesImagesPNG():
-    """ Convertit toutes les images PNG du répertoire Noethys """
+    """ Convertit toutes les images PNG du rï¿½pertoire Noethys """
     racine = "C:/Users/Ivan/Documents/GitHub/Nomadhys/source/images"
-    # Recherche les PNG présents
+    # Recherche les PNG prï¿½sents
     tree = os.walk(racine)
     listeFichiersPNG = []
     for repertoire, listeRepertoires, listeFichiers in tree :
@@ -81,7 +81,7 @@ def ConvertirToutesImagesPNG():
         image.load() 
         profile = image.info.get("icc_profile")
         if profile != None :
-            # Créée une image sans icc_profile
+            # Crï¿½ï¿½e une image sans icc_profile
             nouvelleImage = PyImage.new("RGBA", image.size)
             nouvelleImage.paste(image) 
             
