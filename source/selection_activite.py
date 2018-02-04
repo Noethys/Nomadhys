@@ -13,48 +13,45 @@ import kivy
 from kivy.app import App
 from kivy.logger import Logger
 from kivy.lang import Builder
-from kivy.adapters.dictadapter import DictAdapter, ListAdapter
-from kivy.uix.listview import ListItemButton, ListItemLabel, CompositeListItem, ListView
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.properties import ListProperty, StringProperty, ObjectProperty, NumericProperty
+
+from kivy.uix.recycleview.views import RecycleDataViewBehavior
+from kivy.properties import BooleanProperty, NumericProperty
+from kivy.uix.recycleboxlayout import RecycleBoxLayout
+from kivy.uix.behaviors import FocusBehavior
+from kivy.uix.recycleview.layout import LayoutSelectionBehavior
 
 import UTILS_Dates
 import GestionDB
 
 
 Builder.load_string("""
-#:import ListAdapter kivy.adapters.listadapter.ListAdapter
-#:import lv kivy.uix.listview
 #:import Factory kivy.factory.Factory
+#:import NumericProperty kivy.properties.NumericProperty
 
-<ListItemActivite>:
-    height: '48sp'
-    size_hint: 1, None
-
-    BoxLayout:
-        padding: 5, 0, 5, 0
-		
-        Button:
-            text: root.label
-            size_hint: 1, 1
-            color: (0.65, 0.79, 0.18, 1) if root.popup.selectionActivite == root.IDactivite else (1, 1, 1, 1)
-			on_release: root.popup.On_Selection(root.index)
-
-        #Button:
-        #    text: root.date_debut
-        #    size_hint: 0.3, 1
-		#	on_release: root.popup.On_Selection(root.index)
-
-        #Button:
-        #    text: root.date_fin
-        #    size_hint: 0.3, 1
-		#	on_release: root.popup.On_Selection(root.index)
+<Activite>:
+    index: 0
+    idactivite: NumericProperty()
+    nom: ""
+    spacing: "10dp"
+    canvas.before:
+        Color:
+            rgb: (.19, 0.64, .8) if self.selected else (1, 1, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Label:
+        font_size: "18sp"
+        text: "  " + root.nom
+        color: (0, 0, 0, 1)
+        text_size: (self.width, None)
 
             
 <SelectionActivite>:
     ctrl_listview: ctrl_listview
+    controller: controller
     id: popup
     
     BoxLayout:
@@ -64,23 +61,50 @@ Builder.load_string("""
         spacing: 10
         size_hint: 1, 1
         
-        ListView:
-		    id: ctrl_listview
-			padding: 5
-		    size_hint: 1, 1
-			adapter: ListAdapter(data=root.data, args_converter=root.args_converter, cls=Factory.ListItemActivite)
-                
+        RecycleView:
+            id: ctrl_listview
+            scroll_type: ['bars', 'content']
+            scroll_wheel_distance: dp(114)
+            bar_width: dp(10)
+            viewclass: 'Activite'
+            SelectableRecycleBoxLayout:
+                id: controller
+                default_size: None, dp(56)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                spacing: dp(2)
+
 """)
 
-        
-class ListItemActivite(BoxLayout):
-    index = NumericProperty()
-    popup = ObjectProperty()
-    IDactivite = NumericProperty()
-    label = StringProperty()
-    nom = StringProperty()
-    date_debut = StringProperty()
-    date_fin = StringProperty()
+
+class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior, RecycleBoxLayout):
+    """ Adds selection and focus behaviour to the view. """
+    selected_value = StringProperty('')
+
+
+class Activite(RecycleDataViewBehavior, BoxLayout):
+    """ Add selection support to the Label """
+    index = None
+    selected = BooleanProperty(False)
+    selectable = BooleanProperty(True)
+
+    def refresh_view_attrs(self, rv, index, data):
+        """ Catch and handle the view changes """
+        self.index = index
+        return super(Activite, self).refresh_view_attrs(rv, index, data)
+
+    def on_touch_down(self, touch):
+        """ Add selection on touch down """
+        if super(Activite, self).on_touch_down(touch):
+            return True
+        if self.collide_point(*touch.pos) and self.selectable:
+            return self.parent.select_with_touch(self.index, touch)
+
+    def apply_selection(self, rv, index, is_selected):
+        """ Respond to the selection of items in the view. """
+        self.selected = is_selected
 
             
 class SelectionActivite(Popup):
@@ -90,7 +114,8 @@ class SelectionActivite(Popup):
         super(Popup, self).__init__(*args, **kwargs)
         self.callback = kwargs.pop("callback", None)
         self.selectionActivite = kwargs.pop("IDactivite", None)
-        
+        self.ctrl_listview.layout_manager.bind(selected_nodes=self.selectionChange)
+
         # Importation des activités
         DB = GestionDB.DB()
         req = """SELECT IDactivite, nom, date_debut, date_fin
@@ -102,35 +127,34 @@ class SelectionActivite(Popup):
         
         # Préparation des données
         self.data = []
+        self.dictActivites = {}
+        index = 0
+        selection = None
         for IDactivite, nom, date_debut, date_fin in listeTemp :
             date_debut = UTILS_Dates.DateEngFr(date_debut)
             date_debut = UTILS_Dates.DateEngFr(date_fin)
             label = nom
-            self.data.append(
+            if IDactivite == self.selectionActivite :
+                selection = index
+            dictActivite = (
                 {"IDactivite":IDactivite, "nom":nom, "nom":nom, 
                 "label":label, "date_debut":date_debut, "date_fin":date_fin}
                 )
-        
-        # Envoi des données vers le listview
-        self.ctrl_listview.adapter.bind(on_selection_change=self.On_Selection)
-        
-        
-    def args_converter(self, row_index, item):
-        return {
-            'popup': self,
-            'IDactivite': item['IDactivite'],
-            'nom': item['nom'],
-            'label': item['label'],
-            'date_debut': item['date_debut'],
-            'date_fin': item['date_fin'],
-            'index' : row_index,
-            }
+            self.data.append(dictActivite)
+            self.dictActivites[IDactivite] = dictActivite
+            index += 1
 
-    def On_Selection(self, index=None):
-        dictActivite = self.data[index]
-        if self.callback != None :
-            self.callback(dictActivite["IDactivite"])
-        self.dismiss() 
+        self.ctrl_listview.data = self.data
+        if selection != None :
+            self.controller.select_node(selection)
+
+    def selectionChange(self, inst, val):
+        if len(val) > 0 :
+            index = val[0]
+            IDactivite = self.ctrl_listview.data[index]['IDactivite']
+            if self.callback != None:
+                self.callback(IDactivite)
+            self.dismiss()
 
         
         

@@ -47,7 +47,7 @@ class SelectionDate(Popup):
         box_navigation.add_widget(b) 
         b.bind(on_release=self.on_bouton_navigation)
         
-        self.ctrl_titre = Label(text="", size_hint=(1, 1), markup=True, font_size=22, color=get_color_from_hex("a8ca2f")) 
+        self.ctrl_titre = Label(text="", size_hint=(1, 1), markup=True, font_size=22, color=get_color_from_hex("30a3cc"))
         box_navigation.add_widget(self.ctrl_titre)         
 
         b = Button(text=">", size_hint=(0.2, 1))
@@ -77,7 +77,7 @@ class SelectionDate(Popup):
                     date = datetime.date(self.selectionAnnee, self.selectionMois, dateOfWeek)
                     b = Button(text=str(dateOfWeek))
                     if date == self.selectionDate :
-                        b.background_color = get_color_from_hex("a8ca2f")
+                        b.background_color = get_color_from_hex("30a3cc")
                         b.background_normal = ""
                     if date == datetime.date.today() :
                         b.color = (1, 0, 0, 1)

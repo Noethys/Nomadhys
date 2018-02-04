@@ -92,7 +92,7 @@ class FicheIndividu(Screen):
         DB = GestionDB.DB()
         req = """SELECT IDinfo, IDindividu, champ, valeur 
         FROM informations 
-        WHERE IDindividu=%d;""" % self.dictIndividu["IDindividu"]
+        WHERE IDindividu=%d;""" % self.dictIndividu["idindividu"]
         DB.ExecuterReq(req)
         listeInformations = DB.ResultatReq()
         DB.Close() 
@@ -106,7 +106,7 @@ class FicheIndividu(Screen):
         ctrl_box_haut = BoxLayout(orientation="horizontal", padding=10, size_hint_y=None)
         
         # Nom de l'individu
-        ctrl_label = Label(text="[color=000000][size=28][b]%s[/b][/size][/color]" % self.dictIndividu["nomComplet"], markup=True, size_hint_y=None)
+        ctrl_label = Label(text="[color=000000][size=28][b]%s[/b][/size][/color]" % self.dictIndividu["nom_complet"], markup=True, size_hint_y=None)
         ctrl_box_haut.add_widget(ctrl_label)
         
 		# Photo

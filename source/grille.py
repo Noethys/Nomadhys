@@ -911,10 +911,10 @@ class Grille(Screen):
         
         for IDunite in self.listeUnites :
             dictUnite = self.dictUnites[IDunite]
-            ctrl_label = Label(text=dictUnite["abrege"], size_hint=(0.3, None))
+            ctrl_label = Label(text=dictUnite["abrege"], size_hint=(0.3, 1))
             self.box_cases.add_widget(ctrl_label)
         
-        ctrl_label = Label(text="Mémo journalier", size_hint=(1, None))
+        ctrl_label = Label(text="Mémo journalier", size_hint=(1, 1))
         self.box_cases.add_widget(ctrl_label)
         
         # Dessin des cases
