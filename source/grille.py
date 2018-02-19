@@ -322,20 +322,12 @@ Builder.load_string("""
                 on_release: root.on_bouton_annuler()
                                     
             BoutonAvecImageLarge:
-                id: bouton_afficher_inscrits
-                texte: 'Inscrits'
+                id: bouton_afficher_filtrer
+                texte: 'Filtrer'
                 font_size: 15
                 chemin_image: 'images/filtre.png'
                 disabled: root.IDactivite == None
-                on_release: root.on_bouton_afficher_inscrits()
-                
-            BoutonAvecImageLarge:
-                id: bouton_afficher_presents
-                texte: 'Présents'
-                font_size: 15
-                chemin_image: 'images/filtre.png'
-                disabled: root.IDactivite == None
-                on_release: root.on_bouton_afficher_presents()
+                on_release: root.on_bouton_selection_filtres()
             
             BoutonAvecImageLarge:
                 id: bouton_afficher_totaux
@@ -791,8 +783,8 @@ class Grille(Screen):
         individus.nom, individus.prenom
         FROM inscriptions 
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
-        WHERE IDactivite=%d 
-        ORDER BY nom, prenom; """ % self.IDactivite
+        WHERE IDactivite=%d AND (date_desinscription IS NULL OR date_desinscription>='%s')
+        ORDER BY nom, prenom; """ % (self.IDactivite, self.dateFin)
         DB.ExecuterReq(req)
         listeTemp = DB.ResultatReq()
         self.listeInscriptions = []
@@ -1076,7 +1068,7 @@ class Grille(Screen):
     def on_bouton_ajouter_inscription(self):
         """ Ajouter un individu """
         from selection_inscription import SelectionInscription
-        popup = SelectionInscription(IDactivite=self.IDactivite, callback=self.ValiderAjoutInscription)
+        popup = SelectionInscription(date=self.dateFin, IDactivite=self.IDactivite, callback=self.ValiderAjoutInscription)
         popup.open()
     
     def ValiderAjoutInscription(self, IDinscription=None):
@@ -1088,9 +1080,54 @@ class Grille(Screen):
         self.Affiche_page_actuelle()
         # Sélectionne la page de l'individu
         self.RechercherIndividu(IDinscription=IDinscription)
-        
+
+    def on_bouton_selection_filtres(self):
+        from selection_filtre import SelectionFiltre
+        popup = SelectionFiltre(title="Sélectionnez un filtre", date_debut=self.dateDebut, date_fin=self.dateFin, callback=self.Selection_filtre, size_hint=(0.8, 0.8))
+        popup.open()
+
+    def Selection_filtre(self, categorie="", id=""):
+        """ Sélection d'un filtre """
+        if categorie == "standard" :
+            if id == "presents" :
+                self.AfficherPresents()
+            if id == "inscrits" :
+                self.AfficherInscrits()
+        if categorie == "ecole" :
+            self.AfficherEleves(IDecole=id)
+        if categorie == "classe" :
+            self.AfficherEleves(IDclasse=id)
+
+    def AfficherEleves(self, IDecole=None, IDclasse=None):
+        conditions = []
+        if IDecole != None : conditions.append("IDecole=%d" % IDecole)
+        if IDclasse != None: conditions.append("IDclasse=%d" % IDclasse)
+
+        DB = GestionDB.DB()
+        req = """SELECT IDscolarite, IDindividu
+        FROM scolarite 
+        WHERE date_debut<='%s' AND date_fin>='%s'
+        AND %s;""" % (self.dateDebut, self.dateFin, " AND ".join(conditions))
+        DB.ExecuterReq(req)
+        listeScolarite = DB.ResultatReq()
+        DB.Close()
+        listeIndividus = []
+        for IDscolarite, IDindividu in listeScolarite :
+            listeIndividus.append(IDindividu)
+
+        self.listeInscriptionsAffichees = []
+        for key, dictInscription in self.dictInscriptions.iteritems() :
+            if dictInscription["IDindividu"] in listeIndividus :
+                self.listeInscriptionsAffichees.append(key)
+
+        self.pageActuelle = 0
+        self.Affiche_page_actuelle()
+
     def on_bouton_afficher_inscrits(self):
         """ Afficher tous les inscrits """
+        self.AfficherInscrits()
+
+    def AfficherInscrits(self):
         self.listeInscriptionsAffichees = self.dictInscriptions.keys()
         self.pageActuelle = 0        
         self.Affiche_page_actuelle()
