@@ -88,14 +88,14 @@ class Echo(protocol.Protocol):
     
             
     def connectionMade(self):
-        self.screen.EcritLog("Connexion avec l'hôte %s effectuée" % self.transport.getPeer().host)
+        self.screen.EcritLog(u"Connexion avec l'hôte %s effectuée" % self.transport.getPeer().host)
         
         if self.action == "envoyer" :
             # Recherche le nom de fichier à envoyer
-            self.screen.EcritLog("Génération du fichier à envoyer")
+            self.screen.EcritLog(u"Génération du fichier à envoyer")
             self.nomFichierAenvoyer = GenerationFichierAenvoyer() 
             if self.nomFichierAenvoyer == None :
-                self.screen.EcritLog("Erreur : Aucun fichier à générer")
+                self.screen.EcritLog(u"Erreur : Aucun fichier à générer")
                 return
             tailleFichier = os.path.getsize(self.nomFichierAenvoyer) 
             nomFichier = self.nomFichierAenvoyer.replace(UTILS_Divers.GetRepData(), "")
@@ -108,16 +108,16 @@ class Echo(protocol.Protocol):
         
         if self.action == "recevoir" :
             self.transport.write("recevoir")
-            self.screen.EcritLog("Recherche du fichier sur le serveur. Veuillez patientez...")
+            self.screen.EcritLog(u"Recherche du fichier sur le serveur. Veuillez patientez...")
             
     def Envoyer(self):
         # Envoie le fichier
-        self.screen.EcritLog("Envoi en cours...")
+        self.screen.EcritLog(u"Envoi en cours...")
         f = open(self.nomFichierAenvoyer, "rb")
         self.transport.write(f.read())
         f.close()
-        self.screen.EcritLog("Fin de l'envoi")
-        self.screen.EcritLog("", log=False)
+        self.screen.EcritLog(u"Fin de l'envoi")
+        self.screen.EcritLog(u"", log=False)
         os.remove(self.nomFichierAenvoyer)
         
         # Ferme la connexion
@@ -148,15 +148,15 @@ class Echo(protocol.Protocol):
                     IDfichier = config.Lire(section="fichier", option="ID", defaut="")
                     config.Close() 
                     if IDfichier not in nomInitial :
-                        self.screen.EcritLog("Aucun fichier disponible sur le serveur")
+                        self.screen.EcritLog(u"Aucun fichier disponible sur le serveur")
                         return
     
                     nomFinal = UTILS_Divers.GetRepData() + nomInitial
-                    self.screen.EcritLog("Ok pour recevoir le fichier %s de taille %s" % (nomInitial, sizeof_fmt(tailleFichier)))
+                    self.screen.EcritLog(u"Ok pour recevoir le fichier %s de taille %s" % (nomInitial, sizeof_fmt(tailleFichier)))
                     fichier = open(nomFinal,"wb")
                     self.transport.write("pret_pour_reception")
-                    self.screen.EcritLog("Création du fichier de réception")
-                    self.screen.EcritLog("Transfert du fichier en cours...")
+                    self.screen.EcritLog(u"Création du fichier de réception")
+                    self.screen.EcritLog(u"Transfert du fichier en cours...")
                     
                     self.dictFichierReception = {
                         "nom_initial" : nomInitial,
@@ -173,7 +173,7 @@ class Echo(protocol.Protocol):
                 # Calcule de la taille de la partie telechargee
                 self.dictFichierReception["taille_actuelle"] += len(data)
                 pourcentage = int(100.0 * self.dictFichierReception["taille_actuelle"] / self.dictFichierReception["taille_totale"])
-                self.screen.EcritLog("[" + str(pourcentage) + " %] Transfert en cours...", log=False)
+                self.screen.EcritLog(u"[" + str(pourcentage) + " %] Transfert en cours...", log=False)
                 self.screen.SetValeurProgressbar(pourcentage)
                 
                 # Envoi un message de fin de reception
@@ -183,19 +183,19 @@ class Echo(protocol.Protocol):
     
     def connectionLost(self, reason):
         if self.dictFichierReception != None:
-            self.screen.EcritLog("Clôture du fichier de réception")
+            self.screen.EcritLog(u"Clôture du fichier de réception")
             self.dictFichierReception["fichier"].close()
             
             # Vérifie que le fichier a été transféré en intégralité
             if self.dictFichierReception["taille_totale"] == self.dictFichierReception["taille_actuelle"] :
-                self.screen.EcritLog("Transfert reussi")
+                self.screen.EcritLog(u"Transfert réussi")
                 self.screen.ReceptionFichier(self.dictFichierReception["nom_final"])
             else :
-                self.screen.EcritLog("Echec du transfert : le fichier est incomplet !")
+                self.screen.EcritLog(u"Echec du transfert : le fichier est incomplet !")
             
             self.dictFichierReception = None
             
-        self.screen.EcritLog("Fin de la connexion avec %s" % self.transport.getPeer().host)
+        self.screen.EcritLog(u"Fin de la connexion avec %s" % self.transport.getPeer().host)
         self.screen.EcritLog("", log=False)
         
         
@@ -212,10 +212,10 @@ class EchoFactory(protocol.ClientFactory):
         pass
     
     def clientConnectionFailed(self, connector, reason):
-        self.protocol.screen.EcritLog("Echec de la connexion", etat=False)
+        self.protocol.screen.EcritLog(u"Echec de la connexion", etat=False)
 
     def startedConnecting(self, connector):
-        self.protocol.screen.EcritLog("Tentative de connexion", etat=False)
+        self.protocol.screen.EcritLog(u"Tentative de connexion", etat=False)
 
         
 # --------------------------------- INTERFACE KIVY -------------------------------------------------
@@ -323,7 +323,7 @@ Builder.load_string("""
                 text: ''
                 markup: True
                 font_size: 14
-                size_hint: 1, None
+                size_hint: 1, 1
                 v_align: 'middle'
                 text_size: (self.size[0], None)
 
@@ -418,8 +418,8 @@ class Synchronisation(Screen):
         try :
             reactor.connectTCP(adresse, int(port), EchoFactory(self, action=action), timeout=5)
         except Exception, err:
-            self.EcritLog("Echec de la connexion : Verifiez les paramètres !")
-            MsgBox.info(text="Verifiez les paramètres de connexion !", title="Echec de la connexion", size_hint=(0.6, 0.6))
+            self.EcritLog(u"Echec de la connexion : Verifiez les paramètres !")
+            MsgBox.info(text=u"Vérifiez les paramètres de connexion !", title="Echec de la connexion", size_hint=(0.6, 0.6))
     
     def StartFTP(self, action="envoyer"):
         # Récupération des paramètres dans le config
@@ -573,7 +573,7 @@ class Synchronisation(Screen):
         f.close()
         fichierZip.close()
         os.remove(nouveauCheminFichier)
-        self.EcritLog("Fichier installé avec succès")
+        self.EcritLog(u"Fichier installé avec succès")
         
         # Suppression des fichiers d'actions obsolètes
         DB = GestionDB.DB()
@@ -600,13 +600,19 @@ class Synchronisation(Screen):
     def EcritLog(self, texte="", etat=True, log=True):
         # Affiche dans l'état
         if etat == True :
+            #print "self.ctrl_etat.text=", self.ctrl_etat.text, type(self.ctrl_etat.text)
+            #print "texte=", texte, type(texte)
             self.ctrl_etat.text = texte
         
         # Affichage dans le log
         if log == True :
             horodatage = time.strftime("%d/%m/%y %H:%M:%S", time.localtime())
-            texte = "[%s] %s\n" % (horodatage, texte)
-            self.log_sync.text = self.log_sync.text.decode("utf-8") + texte.decode("utf-8")
+            texte = u"[%s] %s\n" % (horodatage, texte)
+
+            try :
+                self.log_sync.text = u"%s %s" % (self.log_sync.text.decode("utf-8"), texte.decode("utf-8"))
+            except :
+                self.log_sync.text = u"%s %s" % (self.log_sync.text, texte)
         
     def SetValeurProgressbar(self, valeur):
         self.progress.value = valeur
