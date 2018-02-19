@@ -23,7 +23,10 @@ import os
     
 		
 def TextureFromPyImage(pyImg):
-    raw = pyImg.tobytes()
+    try :
+        raw = pyImg.tostring()
+    except:
+        raw = pyImg.tobytes()
     width, height = pyImg.size
     imdata = ImageData(width, height, 'rgb', raw)
     texture = Texture.create_from_data(imdata)
