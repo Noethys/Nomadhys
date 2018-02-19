@@ -38,14 +38,14 @@ Builder.load_string("""
     spacing: "10dp"
     canvas.before:
         Color:
-            rgb: (.19, 0.64, .8) if self.selected else (1, 1, 1)
+            rgb: (.19, 0.64, .8) if self.selected else (.4, .4, .4, 1)
         Rectangle:
             pos: self.pos
             size: self.size
     Label:
         font_size: "18sp"
         text: "  " + root.nom
-        color: (0, 0, 0, 1)
+        color: (1, 1, 1, 1)
         text_size: (self.width, None)
 
             
@@ -132,7 +132,7 @@ class SelectionActivite(Popup):
         selection = None
         for IDactivite, nom, date_debut, date_fin in listeTemp :
             date_debut = UTILS_Dates.DateEngFr(date_debut)
-            date_debut = UTILS_Dates.DateEngFr(date_fin)
+            date_fin = UTILS_Dates.DateEngFr(date_fin)
             label = nom
             if IDactivite == self.selectionActivite :
                 selection = index

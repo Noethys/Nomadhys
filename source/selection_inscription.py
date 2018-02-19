@@ -42,7 +42,7 @@ Builder.load_string("""
     spacing: "10dp"
     canvas.before:
         Color:
-            rgb: (.19, 0.64, .8) if self.selected else (1, 1, 1)
+            rgb: (.19, 0.64, .8) if self.selected else (.4, .4, .4, 1)
         Rectangle:
             pos: self.pos
             size: self.size
@@ -53,7 +53,7 @@ Builder.load_string("""
     Label:
         font_size: "18sp"
         text: root.nom_complet
-        color: (0, 0, 0, 1)
+        color: (1, 1, 1, 1)
         text_size: (self.width, None)
 
 
@@ -188,6 +188,7 @@ class SelectionInscription(Popup):
 
     def __init__(self, **kwargs):
         self.app = kwargs.get("app", None)
+        self.date = kwargs.pop("date", None)
         self.IDactivite = kwargs.pop("IDactivite", None)
         self.callback = kwargs.pop("callback", None)
         super(Popup, self).__init__(**kwargs)
@@ -206,8 +207,8 @@ class SelectionInscription(Popup):
             FROM inscriptions 
             LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
             WHERE nomtemp LIKE '%%%s%%' 
-            AND IDactivite=%d
-            ORDER BY nom, prenom;""" % (self.filtre, self.IDactivite)
+            AND IDactivite=%d AND (date_desinscription IS NULL OR date_desinscription>='%s')
+            ORDER BY nom, prenom;""" % (self.filtre, self.IDactivite, self.date)
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             DB.Close() 
