@@ -407,7 +407,7 @@ class BoutonCase(Button):
         
     def MAJ(self):
         self.disabled = not self.ouvert
-        
+
         if self.dictConso == {}:
             # Apparence par défaut
             if self.background_normal == "" :
@@ -417,7 +417,7 @@ class BoutonCase(Button):
             self.image_etat.opacity = 0
             self.label_groupe.text = ""
             self.text = ""
-                
+
         else :
             etat = self.dictConso["etat"]
             
@@ -1083,7 +1083,7 @@ class Grille(Screen):
 
     def on_bouton_selection_filtres(self):
         from selection_filtre import SelectionFiltre
-        popup = SelectionFiltre(title="Sélectionnez un filtre", date_debut=self.dateDebut, date_fin=self.dateFin, callback=self.Selection_filtre, size_hint=(0.8, 0.8))
+        popup = SelectionFiltre(title="Sélectionnez un filtre", IDactivite=self.IDactivite, date_debut=self.dateDebut, date_fin=self.dateFin, callback=self.Selection_filtre, size_hint=(0.8, 0.8))
         popup.open()
 
     def Selection_filtre(self, categorie="", id=""):
@@ -1093,10 +1093,20 @@ class Grille(Screen):
                 self.AfficherPresents()
             if id == "inscrits" :
                 self.AfficherInscrits()
+        if categorie == "groupe" :
+            self.AfficherGroupes(IDgroupe=id)
         if categorie == "ecole" :
             self.AfficherEleves(IDecole=id)
         if categorie == "classe" :
             self.AfficherEleves(IDclasse=id)
+
+    def AfficherGroupes(self, IDgroupe=None):
+        self.listeInscriptionsAffichees = []
+        for key, dictInscription in self.dictInscriptions.iteritems() :
+            if dictInscription["IDgroupe"] == IDgroupe :
+                self.listeInscriptionsAffichees.append(key)
+        self.pageActuelle = 0
+        self.Affiche_page_actuelle()
 
     def AfficherEleves(self, IDecole=None, IDclasse=None):
         conditions = []

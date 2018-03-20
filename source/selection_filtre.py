@@ -51,6 +51,24 @@ Builder.load_string("""
         text_size: (self.width, None)
 
 
+<Groupe>:
+    index: 0
+    idgroupe: NumericProperty()
+    nom: ""
+    spacing: "10dp"
+    canvas.before:
+        Color:
+            rgb: (.19, 0.64, .8) if self.selected else (.4, .4, .4, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Label:
+        font_size: "18sp"
+        text: "  " + root.nom
+        color: (1, 1, 1, 1)
+        text_size: (self.width, None)
+
+
 <Ecole>:
     index: 0
     idecole: NumericProperty()
@@ -97,6 +115,7 @@ Builder.load_string("""
 <SelectionFiltre>:
     id: popup
     ctrl_standards: ctrl_standards
+    ctrl_groupes: ctrl_groupes
     ctrl_classes: ctrl_classes
     ctrl_ecoles: ctrl_ecoles
         
@@ -128,8 +147,30 @@ Builder.load_string("""
                     orientation: 'vertical'
                     spacing: dp(2)
 
+
         TabbedPanelItem:
             id: tab2
+            text: 'Groupes'
+
+            RecycleView:
+                id: ctrl_groupes
+                scroll_type: ['bars', 'content']
+                scroll_wheel_distance: dp(114)
+                bar_width: dp(10)
+                viewclass: 'Groupe'
+                SelectableRecycleBoxLayout:
+                    id: controller_groupes
+                    padding: 10
+                    margin: 10
+                    default_size: None, dp(56)
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+                    spacing: dp(2)
+
+        TabbedPanelItem:
+            id: tab3
             text: 'Ecoles'
 
             RecycleView:
@@ -150,7 +191,7 @@ Builder.load_string("""
                     spacing: dp(2)
 
         TabbedPanelItem:
-            id: tab3
+            id: tab4
             text: 'Classes'
 
             RecycleView:
@@ -192,6 +233,29 @@ class Standard(RecycleDataViewBehavior, BoxLayout):
     def on_touch_down(self, touch):
         """ Add selection on touch down """
         if super(Standard, self).on_touch_down(touch):
+            return True
+        if self.collide_point(*touch.pos) and self.selectable:
+            return self.parent.select_with_touch(self.index, touch)
+
+    def apply_selection(self, rv, index, is_selected):
+        """ Respond to the selection of items in the view. """
+        self.selected = is_selected
+
+
+class Groupe(RecycleDataViewBehavior, BoxLayout):
+    """ Add selection support to the Label """
+    index = None
+    selected = BooleanProperty(False)
+    selectable = BooleanProperty(True)
+
+    def refresh_view_attrs(self, rv, index, data):
+        """ Catch and handle the view changes """
+        self.index = index
+        return super(Groupe, self).refresh_view_attrs(rv, index, data)
+
+    def on_touch_down(self, touch):
+        """ Add selection on touch down """
+        if super(Groupe, self).on_touch_down(touch):
             return True
         if self.collide_point(*touch.pos) and self.selectable:
             return self.parent.select_with_touch(self.index, touch)
@@ -253,10 +317,12 @@ class SelectionFiltre(Popup):
     
     def __init__(self, *args, **kwargs):
         super(Popup, self).__init__(*args, **kwargs)
+        self.IDactivite = kwargs.pop("IDactivite", None)
         self.date_debut = kwargs.pop("date_debut", None)
         self.date_fin = kwargs.pop("date_fin", None)
         self.callback = kwargs.pop("callback", None)
         self.ctrl_standards.layout_manager.bind(selected_nodes=self.OnSelectionStandard)
+        self.ctrl_groupes.layout_manager.bind(selected_nodes=self.OnSelectionGroupe)
         self.ctrl_ecoles.layout_manager.bind(selected_nodes=self.OnSelectionEcole)
         self.ctrl_classes.layout_manager.bind(selected_nodes=self.OnSelectionClasse)
 
@@ -266,9 +332,24 @@ class SelectionFiltre(Popup):
         data.append({"filtre":"inscrits", "nom":"Inscrits"})
         self.ctrl_standards.data = data
 
-        # Importation des classes
         DB = GestionDB.DB()
 
+        # Importation des groupes
+        if self.IDactivite == None :
+            self.IDactivite = 0
+        req = """SELECT IDgroupe, nom
+        FROM groupes
+        WHERE IDactivite=%d
+        ORDER BY nom;""" % self.IDactivite
+        DB.ExecuterReq(req)
+        liste_groupes = DB.ResultatReq()
+        data = []
+        for IDgroupe, nom in liste_groupes :
+            dictGroupe = {"idgroupe":IDgroupe, "nom":nom}
+            data.append(dictGroupe)
+        self.ctrl_groupes.data = data
+
+        # Importation des classes
         req = """SELECT IDecole, nom
         FROM ecoles
         ORDER BY nom;"""
@@ -330,6 +411,14 @@ class SelectionFiltre(Popup):
             filtre = self.ctrl_standards.data[index]['filtre']
             if self.callback != None:
                 self.callback("standard", filtre)
+            self.dismiss()
+
+    def OnSelectionGroupe(self, inst, val):
+        if len(val) > 0 :
+            index = val[0]
+            IDgroupe = self.ctrl_groupes.data[index]['idgroupe']
+            if self.callback != None:
+                self.callback("groupe", IDgroupe)
             self.dismiss()
 
     def OnSelectionEcole(self, inst, val):
