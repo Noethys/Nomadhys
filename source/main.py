@@ -5,12 +5,12 @@
 # Application :    Nomadhys, application nomade pour Noethys #
 # Site internet :  www.noethys.com                           #
 # Auteur:          Ivan LUCAS                                #
-# Copyright:       (c) 2010-15 Ivan LUCAS                    #
+# Copyright:       (c) 2010-18 Ivan LUCAS                    #
 # Licence:         Licence GNU GPL                           #
 ##############################################################
 
 
-__version__ = '1.1'
+__version__ = '1.2'
 
 from nomadhys import Nomadhys
 
