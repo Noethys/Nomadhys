@@ -18,7 +18,7 @@ from kivy.app import App
 from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.core.window import Window
-
+from kivy.uix.button import Button
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.properties import BooleanProperty, NumericProperty
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
@@ -251,11 +251,13 @@ class SelectionInscription(Popup):
     def on_dismiss(self):
         Window.release_all_keyboards()
 
-		
-		
+
 class MyApp(App):
     def build(self):
-        # Génération du popup            
+        b = Button(on_press=self.show_popup, text="Afficher Popup")
+        return b
+
+    def show_popup(self, b):
         popup = SelectionInscription(IDactivite=1, callback=self.test)
         popup.open()    
         return popup

@@ -294,8 +294,8 @@ class Popup_parametres(Popup):
         self.settings.register_type('password', SettingPassword)
         self.settings.register_type('chaine', SettingChaine)
         
-        if "general" in self.pages : self.settings.add_json_panel("Généralités", config, data=json.dumps(JSON_GENERAL, encoding="utf-8"))
-        if "synchronisation" in self.pages : self.settings.add_json_panel("Synchronisation", config, data=json.dumps(JSON_SYNCHRONISATION, encoding="utf-8"))
+        if "general" in self.pages : self.settings.add_json_panel("Généralités", config, data=json.dumps(JSON_GENERAL))
+        if "synchronisation" in self.pages : self.settings.add_json_panel("Synchronisation", config, data=json.dumps(JSON_SYNCHRONISATION))
         if "kivy" in self.pages : self.settings.add_kivy_panel()
         
         self.settings.interface.menu.close_button.text = "Fermer"
@@ -331,7 +331,7 @@ class MyApp(App):
         return popup
     
     def Test(self):
-        print "callback ici"
+        print("callback ici")
     
         
 

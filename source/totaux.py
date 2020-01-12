@@ -40,15 +40,15 @@ Builder.load_string('''
 ''')
 
 class Case_totaux(Label):
-	bgcolor = ListProperty([1,1,1])
+    bgcolor = ListProperty([1,1,1])
 
-    
+
 
 class Tableau_totaux(GridLayout):
-    def __init__(self, *args, **kwargs):
-        super(Tableau_totaux, self).__init__(*args, **kwargs)		
+    def __init__(self, **kwargs):
         donnees = kwargs.pop("donnees", None)
-        
+
+        super(Tableau_totaux, self).__init__(**kwargs)
         self.size_hint_y = None
         self.cols = len(donnees[0])
         self.rows = len(donnees)
@@ -73,11 +73,11 @@ class Tableau_totaux(GridLayout):
         
 
 class Totaux(Popup):
-    def __init__(self, *args, **kwargs):
-        super(Popup, self).__init__(*args, **kwargs)
+    def __init__(self, **kwargs):
         self.donnees = kwargs.pop("donnees", None)
-                    
-        ctrl_tableau = Tableau_totaux(donnees=self.donnees)  
+
+        super(Popup, self).__init__(**kwargs)
+        ctrl_tableau = Tableau_totaux(donnees=self.donnees)
         ctrl_scroll = ScrollView()
         ctrl_scroll.add_widget(ctrl_tableau)
         ctrl_scroll.do_scroll_y = True
@@ -91,6 +91,10 @@ class Totaux(Popup):
         
 class MyApp(App):
     def build(self):
+        b = Button(on_press=self.show_popup, text="Afficher Popup")
+        return b
+
+    def show_popup(self, b):
         donnees = [
             ("", "col1", "col2"),
             ("ligne1", "L1C1", "L1C2"),
@@ -102,8 +106,7 @@ class MyApp(App):
             ("ligne3", "L3C1", "L3C2"),
             ("ligne3", "L3C1", "L3C2"),
             ]
-
-        # Génération du popup            
+        # Génération du popup
         popup = Totaux(title="Totaux", donnees=donnees, size_hint=(0.8, 0.8))
         popup.open()    
         return popup

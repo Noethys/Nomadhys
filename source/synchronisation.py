@@ -26,6 +26,11 @@ import GestionDB
 from msgbox import MsgBox
 from parametres import Popup_parametres
 
+# fix for pyinstaller packages app to avoid ReactorAlreadyInstalledError
+import sys
+if 'twisted.internet.reactor' in sys.modules:
+    del sys.modules['twisted.internet.reactor']
+
 # install_twisted_rector must be called before importing  and using the reactor
 from kivy.support import install_twisted_reactor
 install_twisted_reactor()
@@ -104,11 +109,12 @@ class Echo(protocol.Protocol):
             nom_appareil = config.Lire(section="general", option="nom_appareil", defaut="")
             config.Close() 
             # Envoi des infos sur le fichier
-            self.transport.write(json.dumps({"action":"envoyer", "nom_appareil":nom_appareil, "nom":nomFichier, "taille":tailleFichier}))
-        
+            texte = json.dumps({"action":"envoyer", "nom_appareil":nom_appareil, "nom":nomFichier, "taille":tailleFichier})
+            self.transport.write(texte.encode('utf-8'))
+
         if self.action == "recevoir" :
-            self.transport.write("recevoir")
-            self.screen.EcritLog(u"Recherche du fichier sur le serveur. Veuillez patientez...")
+            self.transport.write("recevoir".encode('utf-8'))
+            self.screen.EcritLog(u"Recherche du fichier sur le serveur. Veuillez patienter...")
             
     def Envoyer(self):
         # Envoie le fichier
@@ -127,7 +133,7 @@ class Echo(protocol.Protocol):
         #print("data recue = " + str(len(data)))
         
         # Envoi d'un fichier
-        if data == "pret_pour_reception" :
+        if data == b"pret_pour_reception" :
             self.Envoyer()
         
         # Reception d'un fichier
@@ -154,7 +160,7 @@ class Echo(protocol.Protocol):
                     nomFinal = UTILS_Divers.GetRepData() + nomInitial
                     self.screen.EcritLog(u"Ok pour recevoir le fichier %s de taille %s" % (nomInitial, sizeof_fmt(tailleFichier)))
                     fichier = open(nomFinal,"wb")
-                    self.transport.write("pret_pour_reception")
+                    self.transport.write("pret_pour_reception".encode('utf-8'))
                     self.screen.EcritLog(u"Création du fichier de réception")
                     self.screen.EcritLog(u"Transfert du fichier en cours...")
                     
@@ -178,7 +184,7 @@ class Echo(protocol.Protocol):
                 
                 # Envoi un message de fin de reception
                 if self.dictFichierReception["taille_actuelle"] == self.dictFichierReception["taille_totale"] :
-                    self.transport.write("fin_envoi")
+                    self.transport.write("fin_envoi".encode('utf-8'))
                     
     
     def connectionLost(self, reason):
@@ -196,7 +202,7 @@ class Echo(protocol.Protocol):
             self.dictFichierReception = None
             
         self.screen.EcritLog(u"Fin de la connexion avec %s" % self.transport.getPeer().host)
-        self.screen.EcritLog("", log=False)
+        self.screen.EcritLog(u"", log=False)
         
         
         
@@ -336,9 +342,9 @@ class Synchronisation(Screen):
     ctrl_etat = ObjectProperty() 
     ctrl_type_transfert = ObjectProperty() 
     
-    def __init__(self, *args, **kwargs):
-        self.app = kwargs.get("app", None)
-        super(Screen, self).__init__(*args, **kwargs)	
+    def __init__(self, **kwargs):
+        self.app = kwargs.pop("app", None)
+        super(Screen, self).__init__(**kwargs)
         self.ctrl_etat.text = ""
         
         # Récupération du type de transfert préféré
@@ -381,11 +387,11 @@ class Synchronisation(Screen):
         for IDparametre, nom, valeur in listeTemp :
             dictTemp[nom] = IDparametre
         
-        if dictTemp.has_key("nom_appareil") :
+        if "nom_appareil" in dictTemp:
             DB.ReqMAJ("parametres", [("nom", "nom_appareil"), ("valeur", nom_appareil)], "IDparametre", dictTemp["nom_appareil"])
         else :
             DB.ReqInsert("parametres", [("nom", "nom_appareil"), ("valeur", nom_appareil)])
-        if dictTemp.has_key("ID_appareil") :
+        if "ID_appareil" in dictTemp:
             DB.ReqMAJ("parametres", [("nom", "ID_appareil"), ("valeur", ID_appareil)], "IDparametre", dictTemp["ID_appareil"])
         else :
             DB.ReqInsert("parametres", [("nom", "ID_appareil"), ("valeur", ID_appareil)])
@@ -417,7 +423,7 @@ class Synchronisation(Screen):
         # Connexion au serveur
         try :
             reactor.connectTCP(adresse, int(port), EchoFactory(self, action=action), timeout=5)
-        except Exception, err:
+        except Exception as err:
             self.EcritLog(u"Echec de la connexion : Verifiez les paramètres !")
             MsgBox.info(text=u"Vérifiez les paramètres de connexion !", title="Echec de la connexion", size_hint=(0.6, 0.6))
     
@@ -432,15 +438,15 @@ class Synchronisation(Screen):
         config.Close() 
         
         if ftp_hote == "" or ftp_identifiant == "" or ftp_mdp == "" :
-            self.EcritLog("Erreur de connexion : Vérifiez les paramètres FTP !")
+            self.EcritLog(u"Erreur de connexion : Vérifiez les paramètres FTP !")
             return
             
         # Transfert : Envoyer
         if action == "envoyer" :
-            self.EcritLog("Génération du fichier à envoyer")
+            self.EcritLog(u"Génération du fichier à envoyer")
             nomFichier = GenerationFichierAenvoyer()
             if nomFichier == None :
-                self.EcritLog("Erreur : Aucun fichier à générer")
+                self.EcritLog(u"Erreur : Aucun fichier à générer")
                 return
             try :
                 ftp = ftplib.FTP(ftp_hote, ftp_identifiant, ftp_mdp)
@@ -450,24 +456,24 @@ class Synchronisation(Screen):
                 fichier.close()
                 # Vérifie la taille du fichier envoyé
                 if ftp.size(os.path.basename(nomFichier)) == os.path.getsize(nomFichier) :
-                    self.EcritLog("Fichier transféré avec succès")
-                    self.EcritLog("", log=False)
+                    self.EcritLog(u"Fichier transféré avec succès")
+                    self.EcritLog(u"", log=False)
                 else :
-                    self.EcritLog("Transfert du fichier incomplet")
+                    self.EcritLog(u"Transfert du fichier incomplet")
                 ftp.quit()
                 os.remove(nomFichier)
-            except Exception, err :
-                self.EcritLog("Erreur dans l'envoi du fichier par FTP : " + err)
+            except Exception as err :
+                self.EcritLog(u"Erreur dans l'envoi du fichier par FTP : " + err)
                 
         # Transfert : Recevoir
         if action == "recevoir" :
             listeFichiersRecus = []
-            self.EcritLog("Recherche de fichiers dans le répertoire FTP")
+            self.EcritLog(u"Recherche de fichiers dans le répertoire FTP")
             try :
                 ftp = ftplib.FTP(ftp_hote, ftp_identifiant, ftp_mdp)
                 ftp.cwd(ftp_repertoire)
             except :
-                self.EcritLog("Erreur de connexion : Vérifiez les paramètres FTP !")
+                self.EcritLog(u"Erreur de connexion : Vérifiez les paramètres FTP !")
                 return
             # Récupère la liste des fichiers de synchronisation présents sur le répertoire FTP
             try :
@@ -479,34 +485,34 @@ class Synchronisation(Screen):
                         listeFichiersRecus.append((nomFichierFinal, tailleFichier))
                 ftp.quit()
                 if len(listeFichiersRecus) == 0 :
-                    self.EcritLog("Aucun fichier dans le répertoire FTP")
+                    self.EcritLog(u"Aucun fichier dans le répertoire FTP")
                     return
                 for nomFichierFinal, tailleFichier in listeFichiersRecus :
                     if os.path.getsize(nomFichierFinal) != tailleFichier :
-                        self.EcritLog("Transfert du fichier '%s' incomplet" % nomFichierFinal)
+                        self.EcritLog(u"Transfert du fichier '%s' incomplet" % nomFichierFinal)
                     else :
-                        self.EcritLog("Fichier réceptionné avec succès")
+                        self.EcritLog(u"Fichier réceptionné avec succès")
                         self.ReceptionFichier(nomFichierFinal)
-            except Exception, err :
-                self.EcritLog("Erreur de reception FTP : %s" % err)
+            except Exception as err :
+                self.EcritLog(u"Erreur de reception FTP : %s" % err)
                 return
                 
     def StartManuel(self, action="envoyer"):
         # Transfert : Envoyer
         if action == "envoyer" :
-            self.EcritLog("Génération du fichier à envoyer", etat=False)
+            self.EcritLog(u"Génération du fichier à envoyer", etat=False)
             nomFichierAenvoyer = GenerationFichierAenvoyer() 
             if nomFichierAenvoyer == None :
-                self.EcritLog("Erreur : Aucun fichier à générer")
+                self.EcritLog(u"Erreur : Aucun fichier à générer")
                 return
-            self.EcritLog("Choix du chemin de destination", etat=False)
+            self.EcritLog(u"Choix du chemin de destination", etat=False)
             from selection_fichier import SelectionFichier
             popup = SelectionFichier(title="Sélectionnez un répertoire de sauvegarde", nomFichier=nomFichierAenvoyer, callback=self.SauverFichier, chemin=UTILS_Divers.GetRepData(), size_hint=(0.8, 0.8))
             popup.open()  
             
         # Transfert : Recevoir
         if action == "recevoir" :
-            self.EcritLog("Choix du fichier à importer", etat=False)
+            self.EcritLog(u"Choix du fichier à importer", etat=False)
             from selection_fichier import SelectionFichier
             popup = SelectionFichier(title="Sélectionnez un fichier à importer", callback=self.ChargerFichier, chemin=UTILS_Divers.GetRepData(), size_hint=(0.8, 0.8))
             popup.open()  
@@ -527,7 +533,7 @@ class Synchronisation(Screen):
         nouveauFichier = chemin + nomFichier.replace(UTILS_Divers.GetRepData(), "")
         if nouveauFichier != nomFichier :
             shutil.copyfile(nomFichier, nouveauFichier)
-            self.EcritLog("Fichier copie avec succès vers '%s'" % chemin)
+            self.EcritLog(u"Fichier copié avec succès vers '%s'" % chemin)
         
     def ReceptionFichier(self, nomFichier):
         """ Analyse du fichier recu """
@@ -540,13 +546,13 @@ class Synchronisation(Screen):
         # Décryptage du fichier
         if nomFichier.endswith(EXTENSION_CRYPTE) :
             fichierCrypte = True
-            self.EcritLog("Décryptage du fichier")
+            self.EcritLog(u"Décryptage du fichier")
             if cryptage_mdp == "" :
-                self.EcritLog("Erreur : Décryptage impossible. Vous devez saisir le mot de passe dans les paramètres.")
+                self.EcritLog(u"Erreur : Décryptage impossible. Vous devez saisir le mot de passe dans les paramètres.")
                 os.remove(nomFichier)
                 return
             if UTILS_Cryptage_fichier.IMPORT_AES == False :
-                self.EcritLog("Erreur : Décryptage impossible. Le module de décryptage n'est pas disponible.")
+                self.EcritLog(u"Erreur : Décryptage impossible. Le module de décryptage n'est pas disponible.")
                 os.remove(nomFichier)
                 return
             nouveauCheminFichier = nomFichier.replace(EXTENSION_CRYPTE, EXTENSION_DECRYPTE)
@@ -558,9 +564,9 @@ class Synchronisation(Screen):
             
         # Décompression du fichier
         if zipfile.is_zipfile(nouveauCheminFichier) == False :
-            self.EcritLog("Erreur : Le fichier '%s' n'est pas une archive valide" % nouveauCheminFichier)
+            self.EcritLog(u"Erreur : Le fichier '%s' n'est pas une archive valide" % nouveauCheminFichier)
             if fichierCrypte == True :
-                self.EcritLog("Vérifiez que le mot de passe de cryptage est exact dans les paramètres de synchronisation")
+                self.EcritLog(u"Vérifiez que le mot de passe de cryptage est exact dans les paramètres de synchronisation")
             return False        
         
         fichierZip = zipfile.ZipFile(nouveauCheminFichier, "r")
@@ -600,8 +606,6 @@ class Synchronisation(Screen):
     def EcritLog(self, texte="", etat=True, log=True):
         # Affiche dans l'état
         if etat == True :
-            #print "self.ctrl_etat.text=", self.ctrl_etat.text, type(self.ctrl_etat.text)
-            #print "texte=", texte, type(texte)
             self.ctrl_etat.text = texte
         
         # Affichage dans le log

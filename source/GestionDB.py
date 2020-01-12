@@ -93,7 +93,7 @@ class DB:
             else :
                 self.echec = 1
         
-        # Ouverture de la base de données
+        # Ouverture de la base de donnï¿½es
         if self.echec == 0 :
             self.nomFichier = nomFichier
             self.modeCreation = modeCreation
@@ -101,7 +101,7 @@ class DB:
             
     def OuvertureFichier(self, nomFichier):
         """ Version LOCALE avec SQLITE """
-        # Vérifie que le fichier sqlite existe bien
+        # Vï¿½rifie que le fichier sqlite existe bien
         creerTables = False
         if self.modeCreation == False :
             if os.path.isfile(nomFichier) == False :
@@ -114,7 +114,7 @@ class DB:
         
         # Initialisation de la connexion
         try :
-            self.connexion = sqlite3.connect(nomFichier.encode('utf-8'))
+            self.connexion = sqlite3.connect(nomFichier)
             self.cursor = self.connexion.cursor()
         except:
             Logger.error("Application: La connexion avec la base de donnees SQLITE a echouee :" % sys.exc_info()[0])
@@ -123,12 +123,12 @@ class DB:
         else:
             self.echec = 0
         
-        # Création des tables automatique
+        # Crï¿½ation des tables automatique
         if creerTables == True :
             self.CreationTables()      
         
     def CreationTables(self):
-        for nomTable, listeChamps in DICO_TABLES.iteritems():
+        for nomTable, listeChamps in DICO_TABLES.items():
             listeChampsTemp = []
             for nomChamp, typeChamp in listeChamps:
                 listeChampsTemp.append("%s %s" % (nomChamp, typeChamp))
@@ -178,7 +178,7 @@ class DB:
 
     def ReqInsert(self, nomTable, listeDonnees):
         """ Permet d'inserer des donnees dans une table """
-        # Préparation des données
+        # Prï¿½paration des donnï¿½es
         champs = "("
         interr = "("
         valeurs = []
@@ -221,7 +221,7 @@ class DB:
 
     def ReqMAJ(self, nomTable, listeDonnees, nomChampID, ID, IDestChaine=False):
         """ Permet d'inserer des donnees dans une table """
-        # Préparation des données
+        # Prï¿½paration des donnï¿½es
         champs = ""
         valeurs = []
         for donnee in listeDonnees:
@@ -287,7 +287,7 @@ class DB:
 
 def GetChampsTable(nomTable=""):
     for dictTables in (Tables.DB_DATA, Tables.DB_PHOTOS, Tables.DB_DOCUMENTS) :
-        if dictTables.has_key(nomTable) :
+        if nomTable in dictTables:
             listeChamps = []
             for nom, typeTable, info in dictTables[nomTable] :
                 listeChamps.append(nom)

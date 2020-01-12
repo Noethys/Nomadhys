@@ -10,7 +10,7 @@
 ##############################################################
 
 import os
-import ConfigParser
+from six.moves import configparser
 import os
 import sys
 import random
@@ -53,14 +53,14 @@ class Config():
     def __init__(self):
         rep = UTILS_Divers.GetRepData()
         self.nomFichier = rep + "config.cfg"
-        self.config = ConfigParser.ConfigParser()
+        self.config = configparser.ConfigParser()
         self.dirty = False
         # Ouverture du fichier
         if self.config.read(self.nomFichier) == [] :
             self.Creation() 
 
     def Creation(self):
-        """ Création du fichier si n'existe pas """
+        """ Creation du fichier si n'existe pas """
         for section, option, valeur in LISTE_VALEURS : 
             self.Ecrire(section, option, valeur)
     
@@ -81,7 +81,7 @@ class Config():
         self.config.set(section, option, valeur)
     
     def Lire(self, section="", option="", defaut="", typeValeur=str):
-        # Vérifie que l'option existe, sinon la crée avec la valeur défaut
+        # Vï¿½rifie que l'option existe, sinon la crï¿½e avec la valeur dï¿½faut
         if not self.config.has_section(section) :
             self.Ecrire(section, option, defaut)
         else :

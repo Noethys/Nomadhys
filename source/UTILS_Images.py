@@ -10,16 +10,12 @@
 ##############################################################
 
 from kivy.logger import Logger
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
 from kivy.uix.image import Image
 from kivy.core.image import ImageData
 from kivy.graphics.texture import Texture
 from PIL import Image as PyImage#import Image as PyImage
 from PIL import ImageDraw as PyImageDraw#import ImageDraw as PyImageDraw
-import os
+import os, six
     
 		
 def TextureFromPyImage(pyImg):
@@ -45,7 +41,7 @@ def GetBorderPyImage(pyImg):
     return pyImg
 
 def GetPyImageFromStr(str):
-    return PyImage.open(StringIO(str))
+    return PyImage.open(six.BytesIO(str))
 			
 def GetTextureFromBuffer(buffer, avecBord=False):
     pyImg = GetPyImageFromStr(buffer)
@@ -66,7 +62,7 @@ def ConvertirImagePNG(fichier="") :
 
 
 def ConvertirToutesImagesPNG():
-    """ Convertit toutes les images PNG du r�pertoire Noethys """
+    """ Convertit toutes les images PNG du repertoire Noethys """
     racine = "C:/Users/Ivan/Documents/GitHub/Nomadhys/source/images"
     # Recherche les PNG pr�sents
     tree = os.walk(racine)
@@ -75,7 +71,7 @@ def ConvertirToutesImagesPNG():
         for fichier in listeFichiers :
             if fichier.endswith(".png") :
                 listeFichiersPNG.append(repertoire.replace("\\", "/") + "/" + fichier)
-    print "Nbre fichiers PNG trouvees :", len(listeFichiersPNG)
+    print("Nbre fichiers PNG trouvees :", len(listeFichiersPNG))
     # Convertit les PNG
     nbreConversions = 0
     for fichier in listeFichiersPNG :

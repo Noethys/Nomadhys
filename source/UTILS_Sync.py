@@ -17,12 +17,12 @@ from kivy.logger import Logger
 
 
 def AjouterAction(nomTable="", typeAction="", dictAction={}):
-    # Préparation des données
+    # Prï¿½paration des donnï¿½es
     dictAction["horodatage_action"] = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
     dictAction["type_action"] = typeAction
     
     listeDonnees = []
-    for nomChamp, valeur in dictAction.iteritems() :
+    for nomChamp, valeur in dictAction.items() :
         if GestionDB.VerifieChampExiste(nomTable, nomChamp) :
             listeDonnees.append((nomChamp, valeur))
     
@@ -39,8 +39,8 @@ def MemoriserActions(listeActions=[]):
     for categorie, action, donnees in listeActions :
         horodatage = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime())
         IDutilisateur = None
-        # Conversion des données en json
-        for key, valeur in donnees.iteritems() :
+        # Conversion des donnï¿½es en json
+        for key, valeur in donnees.items() :
             if type(valeur) == datetime.date :
                 donnees[key] = str(valeur)
         donneesjson = json.dumps(donnees)
@@ -55,7 +55,7 @@ def MemoriserActions(listeActions=[]):
 def FiltrerDict(dictDonnees={}, listeKeys=[]):
     """ Pour conserver uniquement certaines valeurs d'un dictionnaire """
     dictTemp = {}
-    for key, valeur in dictDonnees.iteritems() :
+    for key, valeur in dictDonnees.items() :
         if key in listeKeys :
             dictTemp[key] = valeur
     return dictTemp

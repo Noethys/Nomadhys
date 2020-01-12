@@ -32,4 +32,4 @@ def ConvertStrToListe(texte=None, siVide=[], separateur=";", typeDonnee="entier"
 
     
 if __name__ == "__main__":
-    print GetRepData()
+    print(GetRepData())

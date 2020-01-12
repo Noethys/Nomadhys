@@ -16,7 +16,7 @@ from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
 from kivy.properties import ListProperty, StringProperty, ObjectProperty, NumericProperty
-
+from kivy.uix.button import Button
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.properties import BooleanProperty, NumericProperty
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
@@ -315,12 +315,13 @@ class Classe(RecycleDataViewBehavior, BoxLayout):
 class SelectionFiltre(Popup):
     data = ListProperty()
     
-    def __init__(self, *args, **kwargs):
-        super(Popup, self).__init__(*args, **kwargs)
+    def __init__(self, **kwargs):
         self.IDactivite = kwargs.pop("IDactivite", None)
         self.date_debut = kwargs.pop("date_debut", None)
         self.date_fin = kwargs.pop("date_fin", None)
         self.callback = kwargs.pop("callback", None)
+
+        super(Popup, self).__init__(**kwargs)
         self.ctrl_standards.layout_manager.bind(selected_nodes=self.OnSelectionStandard)
         self.ctrl_groupes.layout_manager.bind(selected_nodes=self.OnSelectionGroupe)
         self.ctrl_ecoles.layout_manager.bind(selected_nodes=self.OnSelectionEcole)
@@ -397,11 +398,11 @@ class SelectionFiltre(Popup):
             dictTemp[tuple(ordres)] = dictClasse
         index += 1
 
-        keys = dictTemp.keys()
+        keys = list(dictTemp)
         keys.sort()
 
         data = []
-        for key in keys :
+        for key in keys:
             data.append(dictTemp[key])
         self.ctrl_classes.data = data
 
@@ -441,7 +442,10 @@ class SelectionFiltre(Popup):
         
 class MyApp(App):
     def build(self):
-        # Génération du popup            
+        b = Button(on_press=self.show_popup, text="Afficher Popup")
+        return b
+
+    def show_popup(self, b):
         popup = SelectionFiltre(title="Sélectionnez un filtre", callback=self.test, size_hint=(0.8, 0.8))
         popup.open()    
         return popup

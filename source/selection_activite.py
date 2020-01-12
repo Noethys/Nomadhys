@@ -16,7 +16,7 @@ from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
 from kivy.properties import ListProperty, StringProperty, ObjectProperty, NumericProperty
-
+from kivy.uix.button import Button
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.properties import BooleanProperty, NumericProperty
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
@@ -110,10 +110,11 @@ class Activite(RecycleDataViewBehavior, BoxLayout):
 class SelectionActivite(Popup):
     data = ListProperty()
     
-    def __init__(self, *args, **kwargs):
-        super(Popup, self).__init__(*args, **kwargs)
+    def __init__(self, **kwargs):
         self.callback = kwargs.pop("callback", None)
         self.selectionActivite = kwargs.pop("IDactivite", None)
+
+        super(Popup, self).__init__(**kwargs)
         self.ctrl_listview.layout_manager.bind(selected_nodes=self.selectionChange)
 
         # Importation des activités
@@ -160,7 +161,11 @@ class SelectionActivite(Popup):
         
 class MyApp(App):
     def build(self):
-        # Génération du popup            
+        b = Button(on_press=self.show_popup, text="Afficher Popup")
+        return b
+
+    def show_popup(self, b):
+        # Génération du popup
         popup = SelectionActivite(title="Sélectionnez une activité", IDactivite=1, callback=self.test, size_hint=(0.8, 0.8))
         popup.open()    
         return popup

@@ -15,7 +15,7 @@ from kivy.logger import Logger
 from kivy.lang import Builder
 from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
-
+from kivy.uix.button import Button
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.properties import BooleanProperty, StringProperty
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
@@ -122,10 +122,11 @@ class Etat(RecycleDataViewBehavior, BoxLayout):
 
 
 class SelectionEtat(Popup):
-    def __init__(self, *args, **kwargs):
-        super(Popup, self).__init__(*args, **kwargs)
+    def __init__(self, **kwargs):
         self.selectionEtat = kwargs.pop("etat", None)
         self.callback = kwargs.pop("callback", None)
+
+        super(Popup, self).__init__(**kwargs)
         self.ctrl_listview.layout_manager.bind(selected_nodes=self.selectionChange)
 
         # Préparation des données
@@ -156,7 +157,10 @@ class SelectionEtat(Popup):
         
 class MyApp(App):
     def build(self):
-        # Génération du popup            
+        b = Button(on_press=self.show_popup, text="Afficher Popup")
+        return b
+
+    def show_popup(self, b):
         popup = SelectionEtat(title="Sélectionnez un état", etat="present", callback=self.test, size_hint=(0.8, 0.8))
         popup.open()    
         return popup

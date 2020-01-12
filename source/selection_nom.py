@@ -16,9 +16,6 @@ from kivy.lang import Builder
 from kivy.properties import ObjectProperty
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.boxlayout import BoxLayout
-from kivy.utils import get_color_from_hex
 from kivy.core.window import Window
 
 
@@ -67,10 +64,11 @@ Builder.load_string("""
 
 class SelectionNom(Popup):
     ctrl_recherche = ObjectProperty() 
-    def __init__(self, *args, **kwargs):
-        super(SelectionNom, self).__init__(*args, **kwargs)	
-        self.bind(on_dismiss=self.on_dismiss)
+    def __init__(self, **kwargs):
         self.callback = kwargs.pop("callback", None)
+
+        super(SelectionNom, self).__init__(**kwargs)
+        self.bind(on_dismiss=self.on_dismiss)
         self.ctrl_recherche.focus = True
     
     def Rechercher(self, texte=""):
@@ -85,13 +83,16 @@ class SelectionNom(Popup):
         
 class MyApp(App):
     def build(self):
-        # Génération du popup            
+        b = Button(on_press=self.show_popup, text="Afficher Popup")
+        return b
+
+    def show_popup(self, b):
         popup = SelectionNom(title="Saisissez le texte à rechercher", callback=self.test)
         popup.open()    
         return popup
         
     def test(self, texte=None):
-        print "texte choisi :", texte
+        print("texte choisi :", texte)
         
 if __name__ == '__main__':
     MyApp().run()

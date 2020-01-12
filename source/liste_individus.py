@@ -69,8 +69,8 @@ class ListeIndividus(Screen):
     filtre = StringProperty()
 
     def __init__(self, **kwargs):
-        self.app = kwargs.get("app", None)
-        super(Screen, self).__init__(**kwargs)
+        self.app = kwargs.pop("app", None)
+        super(ListeIndividus, self).__init__(**kwargs)
         self.ctrl_listview.layout_manager.bind(selected_nodes=self.selectionChange)
 
     def Remplissage(self):

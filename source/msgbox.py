@@ -82,7 +82,7 @@ class MsgBox(ModalView):
     class MsgBox_ButtonsBar(BoxLayout):
         pass
     
-    def __init__(self, *args, **kw):
+    def __init__(self, **kwargs):
         self.title_widget = None
         self.text_widget = None
         self.separator = None
@@ -90,13 +90,14 @@ class MsgBox(ModalView):
         self.no_button = None
         
         self._callbacks = {
-                      'ok': kw.pop('ok_callback', None),
-                      'yes': kw.pop('yes_callback', None),
-                      'no': kw.pop('no_callback', None)}
+            'ok': kwargs.pop('ok_callback', None),
+            'yes': kwargs.pop('yes_callback', None),
+            'no': kwargs.pop('no_callback', None)
+        }
         
-        kw.setdefault('size_hint', (0.5, 0.5))
-        kw.setdefault('autodismiss', False)
-        super(MsgBox, self).__init__(*args, **kw)
+        kwargs.setdefault('size_hint', (0.5, 0.5))
+        #kwargs.setdefault('autodismiss', False)
+        super(MsgBox, self).__init__(**kwargs)
         self.build_layout()
         
         #self.center = Window.center
@@ -155,8 +156,11 @@ class MsgBox(ModalView):
         return msg
 
 class MainApp(App):
-    
     def build(self):
+        b = Button(on_press=self.show_popup, text="Afficher Popup")
+        return b
+
+    def show_popup(self, b):
         msg = MsgBox(text="Are you able to answer for this question?")
         msg.open()
         return msg

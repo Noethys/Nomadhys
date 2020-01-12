@@ -51,16 +51,17 @@ Builder.load_string("""
 """)
 
 class TableauLettres(GridLayout):
-    def __init__(self, *args, **kwargs):
-        super(TableauLettres, self).__init__(*args, **kwargs)		
+    def __init__(self, **kwargs):
+        super(TableauLettres, self).__init__(**kwargs)
 
 
 class SelectionLettre(Popup):
-    def __init__(self, *args, **kwargs):
-        super(SelectionLettre, self).__init__(*args, **kwargs)	
-        self.bind(on_dismiss=self.on_dismiss)
+    def __init__(self, **kwargs):
         self.callback = kwargs.pop("callback", None)
-        
+
+        super(SelectionLettre, self).__init__(**kwargs)
+        self.bind(on_dismiss=self.on_dismiss)
+
         alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         for lettre in alphabet :
             b = Button(text=lettre, font_size=20, size_hint=(1, 1))
@@ -79,7 +80,10 @@ class SelectionLettre(Popup):
         
 class MyApp(App):
     def build(self):
-        # Génération du popup            
+        b = Button(on_press=self.show_popup, text="Afficher Popup")
+        return b
+
+    def show_popup(self, b):
         popup = SelectionLettre(title="Sélectionnez une lettre", callback=self.test, size_hint=(0.8, 0.8))
         popup.open()    
         return popup

@@ -171,14 +171,15 @@ class SelectionHeure(Popup):
     label_2 = ObjectProperty() 
     label_3 = ObjectProperty()   
     
-    def __init__(self, *args, **kwargs):
-        super(Popup, self).__init__(*args, **kwargs)
+    def __init__(self, **kwargs):
         self.heure = kwargs.pop("heure", None)
         self.callback = kwargs.pop("callback", None)
         self.ctrl_heure = kwargs.pop("ctrl_heure", None)
+
+        super(Popup, self).__init__(**kwargs)
         self.case_focus = 0
         
-        # Importation des données
+        # Importation des donnï¿½es
         self.title = "Saisissez une heure"
         
         # Init affichage
@@ -226,7 +227,10 @@ class SelectionHeure(Popup):
         
 class MyApp(App):
     def build(self):
-        # Génération du popup            
+        b = Button(on_press=self.show_popup, text="Afficher Popup")
+        return b
+
+    def show_popup(self, b):
         popup = SelectionHeure(callback=self.test, heure="20:30")
         popup.open()    
         return popup

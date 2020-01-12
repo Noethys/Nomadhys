@@ -25,10 +25,10 @@ def DateDDEnFr(date):
     return DateEngFr(str(date))
     
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complete : Ex : lundi 15 janvier 2008 """
     if dateDD == None : return u""
     listeJours = ("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")
-    listeMois = ("janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre")
+    listeMois = ("janvier", "fÃ©vrier", "mars", "avril", "mai", "juin", "juillet", "aoÃ»t", "septembre", "octobre", "novembre", "dï¿½cembre")
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -39,7 +39,7 @@ def DateEngEnDateDD(dateEng):
 
 
 def PeriodeComplete(mois, annee):
-    listeMois = ("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre")
+    listeMois = ("Janvier", "FÃ©vrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "AoÃ»t", "Septembre", "Octobre", "Novembre", "Dï¿½cembre")
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -65,13 +65,13 @@ def HeuresEnDecimal(texteHeure="07:00"):
     return int(heure)
 
 def SoustractionHeures(heure_max, heure_min):
-    """ Effectue l'opération heure_max - heure_min. Renvoi un timedelta """
+    """ Effectue l'operation heure_max - heure_min. Renvoi un timedelta """
     if type(heure_max) != datetime.timedelta : heure_max = datetime.timedelta(hours=heure_max.hour, minutes=heure_max.minute)
     if type(heure_min) != datetime.timedelta : heure_min =  datetime.timedelta(hours=heure_min.hour, minutes=heure_min.minute)
     return heure_max - heure_min
 
 def AdditionHeures(heure1, heure2):
-    """ Effectue l'opération heure_max - heure_min. Renvoi un timedelta """
+    """ Effectue l'operation heure_max - heure_min. Renvoi un timedelta """
     if type(heure1) != datetime.timedelta : heure1 = datetime.timedelta(hours=heure1.hour, minutes=heure1.minute)
     if type(heure2) != datetime.timedelta : heure2 =  datetime.timedelta(hours=heure2.hour, minutes=heure2.minute)
     return heure1 + heure2

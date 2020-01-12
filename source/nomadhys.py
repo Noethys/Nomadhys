@@ -86,7 +86,7 @@ class Nomadhys(App):
 
         config.Close() 
         
-		# Init pages
+        # Init pages
         self.ctrl_multipages = self.root.ids.ctrl_multipages
         self.dict_pages = {
             "menu_principal" : {"label" : "Menu principal", "page" : PageAccueil(app=self)},
@@ -96,12 +96,12 @@ class Nomadhys(App):
             "aide" : {"label" : "Aide", "page" : Aide()},
             }
 
-		# Init spinner de l'actionBar
+        # Init spinner de l'actionBar
         self.pages_spinner = [
             "menu_principal",
-            "liste_individus", 
-            "consommations", 
-            "synchronisation", 
+            "liste_individus",
+            "consommations",
+            "synchronisation",
             "aide"
             ]
         
@@ -114,7 +114,7 @@ class Nomadhys(App):
         
         TEMPS_CHARGEMENT = time.time() - HEURE_CHARGEMENT
         Logger.info('Application: Temps de chargement = %s' % TEMPS_CHARGEMENT )
-						
+
     def Afficher_page(self, code_page="", label_page="", direction='left'):
         if self.code_page == "consommations" :
             self.dict_pages["consommations"]["page"].On_leave()
@@ -126,11 +126,11 @@ class Nomadhys(App):
             
         # Chargement d'une page depuis son label
         if label_page != "" :
-            for code_page, dictPage in self.dict_pages.iteritems() : 
+            for code_page, dictPage in self.dict_pages.items() :
                 if dictPage["label"] == label_page : 
                     break
-		# Chargement d'une page depuis son code
-        if self.code_page == code_page : 
+        # Chargement d'une page depuis son code
+        if self.code_page == code_page :
             return
         
         # Vérifications avant chargement page
@@ -216,6 +216,7 @@ class Nomadhys(App):
         
     def on_stop(self):
         self.Enregistrer()
+        self.root_window.close()
         return True
     
     def Enregistrer(self):

@@ -16,6 +16,7 @@ from kivy.lang import Builder
 from kivy.uix.popup import Popup
 from kivy.properties import ObjectProperty
 from msgbox import MsgBox
+from kivy.uix.button import Button
 
 Builder.load_string("""
 <SelectionFichier>:
@@ -46,11 +47,13 @@ Builder.load_string("""
 
 class SelectionFichier(Popup):
     filechooser = ObjectProperty()
-    def __init__(self, *args, **kwargs):
-        super(Popup, self).__init__(*args, **kwargs)
+
+    def __init__(self, **kwargs):
         self.callback = kwargs.pop("callback", None)
         self.nomFichier = kwargs.pop("nomFichier", None)
         chemin = kwargs.pop("chemin", None)
+
+        super(Popup, self).__init__(**kwargs)
         if chemin != None :
             self.filechooser.path = chemin
         
@@ -71,7 +74,10 @@ class SelectionFichier(Popup):
         
 class MyApp(App):
     def build(self):
-        # Génération du popup            
+        b = Button(on_press=self.show_popup, text="Afficher Popup")
+        return b
+
+    def show_popup(self, b):
         popup = SelectionFichier(title="Selectionnez un fichier", callback=self.test, size_hint=(0.8, 0.8))
         popup.open()    
         return popup

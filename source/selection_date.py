@@ -25,12 +25,12 @@ from kivy.utils import get_color_from_hex
 
 
 class SelectionDate(Popup):
-    def __init__(self, *args, **kwargs):
-        super(SelectionDate, self).__init__(*args, **kwargs)	
-        self.bind(on_dismiss=self.on_dismiss)
-        
+    def __init__(self, **kwargs):
         self.callback = kwargs.pop("callback", None)
         self.selectionDate = kwargs.pop("date", datetime.date.today())
+
+        super(SelectionDate, self).__init__(**kwargs)
+        self.bind(on_dismiss=self.on_dismiss)
         
         self.selectionMois = self.selectionDate.month
         self.selectionAnnee = self.selectionDate.year
@@ -116,13 +116,16 @@ class SelectionDate(Popup):
         
 class MyApp(App):
     def build(self):
-        # Génération du popup            
+        b = Button(on_press=self.show_popup, text="Afficher Popup")
+        return b
+
+    def show_popup(self, b):
         popup = SelectionDate(title="Sélectionnez une date", callback=self.test, size_hint=(0.8, 0.8))
         popup.open()    
         return popup
         
     def test(self, date=None):
-        print "date choisie :", date
+        print("date choisie :", date)
         
 if __name__ == '__main__':
     MyApp().run()

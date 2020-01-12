@@ -372,7 +372,6 @@ class BoutonMemo(Button):
         popup.open()  
     
     def Valider(self, texte=""):
-        texte = texte.decode('utf-8')
         if self.text == texte :
             return
             
@@ -380,7 +379,7 @@ class BoutonMemo(Button):
         self.text = texte
         # Envoi de la donnée à la grille
         key = (self.dictInscription["IDindividu"], self.date)
-        if self.grille.dictMemos.has_key(key) == False :
+        if key not in self.grille.dictMemos:
             self.grille.dictMemos[key] = {"texte" : "", "IDmemo" : None}
         self.grille.dictMemos[key]["texte"] = texte
         
@@ -509,7 +508,7 @@ class BoutonCase(Button):
         """ Vérifie les incompatibilités entre les unités """
         unites_incompatibles = self.grille.dictUnites[self.IDunite]["unites_incompatibles"]
         listeCasesLigne = self.grille.dictCasesParLigne[self.numLigne]["unites"]
-        for IDunite, case in listeCasesLigne.iteritems() :
+        for IDunite, case in listeCasesLigne.items() :
             if case.dictConso != {} and case.dictConso["etat"] in ("reservation", "present") :
                 if IDunite in unites_incompatibles :
                     return IDunite
@@ -591,7 +590,7 @@ class BoutonCase(Button):
     def SauvegardeConso______archive(self, typeAction="", dictConso={}):
         # Préparation des données
         listeDonnees = []
-        for nomChamp, valeur in dictConso.iteritems() :
+        for nomChamp, valeur in dictConso.items() :
             if nomChamp not in ("IDfamille", "type_action", "horodatage_action", "IDutilisateur_action") :
                 listeDonnees.append((nomChamp, valeur))
         
@@ -721,8 +720,10 @@ class Grille(Screen):
         DB.ExecuterReq(req)
         listeTemp = DB.ResultatReq()
         for IDunite_incompat, IDunite, IDunite_incompatible in listeTemp :
-            if self.dictUnites.has_key(IDunite) : self.dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
-            if self.dictUnites.has_key(IDunite_incompatible) : self.dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
+            if IDunite in self.dictUnites:
+                self.dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
+            if IDunite_incompatible in self.dictUnites:
+                self.dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
 
         # Importation des ouvertures
         req = """SELECT IDouverture, IDunite, IDgroupe, date
@@ -801,11 +802,11 @@ class Grille(Screen):
             self.dictInscriptions[IDinscription] = dictTemp
             
             # Pour trouver les rattachements multiples
-            if dictTempInscriptions.has_key(IDindividu) == False :
+            if IDindividu not in dictTempInscriptions:
                 dictTempInscriptions[IDindividu] = []
             dictTempInscriptions[IDindividu].append((IDfamille, IDinscription))
 
-        for IDindividu, listeFamilles in dictTempInscriptions.iteritems() :
+        for IDindividu, listeFamilles in dictTempInscriptions.items():
             if len(listeFamilles) > 1 :
                 for IDfamille, IDinscription in listeFamilles :
                     nomTitulaires = self.dictTitulaires[IDfamille] 
@@ -856,7 +857,7 @@ class Grille(Screen):
                 if action == "ajouter" or action == "modifier" :
                     self.dictConso[key] = dictTemp
                 if action == "supprimer" :
-                    if self.dictConso.has_key(key) :
+                    if key in self.dictConso:
                         del self.dictConso[key]
         
         self.dictConsoInitial = copy.deepcopy(self.dictConso)
@@ -967,7 +968,7 @@ class Grille(Screen):
         numLigne = 0
         for nomComplet, IDinscription in listeInscriptionsAlpha :
             # Mémorisation par page
-            if self.dictLignesParPage.has_key(numPage) == False :
+            if numPage not in self.dictLignesParPage:
                 self.dictLignesParPage[numPage] = []
             self.dictLignesParPage[numPage].append(IDinscription)
             # Mémorisation du numéro de page pour chaque ligne
@@ -980,10 +981,6 @@ class Grille(Screen):
         #print "self.dictLignesParPage =", self.dictLignesParPage
         
         nbrePages = len(self.dictLignesParPage)
-        #print "nbrePages=", nbrePages
-        #print "self.nbreLignesParPage=", self.nbreLignesParPage
-        #print "len(self.dictLignesParPage)=", len(self.dictLignesParPage)
-        #print "len(self.dictPageLignes)=", len(self.dictPageLignes)
 
         # Remplissage des contrôles
         for numLigne in range(0, self.nbreLignesParPage) :
@@ -993,7 +990,7 @@ class Grille(Screen):
   
             # Recherche si inscription existe pour cette ligne
             IDinscription = None
-            if self.dictLignesParPage.has_key(self.pageActuelle) :
+            if self.pageActuelle in self.dictLignesParPage:
                 if numLigne < len(self.dictLignesParPage[self.pageActuelle]) :
                     IDinscription = self.dictLignesParPage[self.pageActuelle][numLigne]
                     dictInscription = self.dictInscriptions[IDinscription]
@@ -1014,7 +1011,7 @@ class Grille(Screen):
                 
                     # Recherche si conso existe
                     key = (IDinscription, date, IDunite)
-                    if self.dictConso.has_key(key):
+                    if key in self.dictConso:
                         dictConso = self.dictConso[key]
                     else :
                         dictConso = {}
@@ -1042,7 +1039,7 @@ class Grille(Screen):
                 case.date = date
                 case.opacity = 1
                 key = (dictInscription["IDindividu"], date)
-                if self.dictMemos.has_key(key) :
+                if key in self.dictMemos:
                     case.text = self.dictMemos[key]["texte"]
                 else :
                     case.text = ""
@@ -1102,7 +1099,7 @@ class Grille(Screen):
 
     def AfficherGroupes(self, IDgroupe=None):
         self.listeInscriptionsAffichees = []
-        for key, dictInscription in self.dictInscriptions.iteritems() :
+        for key, dictInscription in self.dictInscriptions.items() :
             if dictInscription["IDgroupe"] == IDgroupe :
                 self.listeInscriptionsAffichees.append(key)
         self.pageActuelle = 0
@@ -1126,7 +1123,7 @@ class Grille(Screen):
             listeIndividus.append(IDindividu)
 
         self.listeInscriptionsAffichees = []
-        for key, dictInscription in self.dictInscriptions.iteritems() :
+        for key, dictInscription in self.dictInscriptions.items() :
             if dictInscription["IDindividu"] in listeIndividus :
                 self.listeInscriptionsAffichees.append(key)
 
@@ -1180,11 +1177,11 @@ class Grille(Screen):
         if refreshGrille :
             self.Draw_grille(importer=True) 
             self.AfficherPresents() 
-        if IDactivite == None or self.dict_activites.has_key(IDactivite) == False :
+        if IDactivite == None or IDactivite not in self.dict_activites:
             nomActivite = "Aucune"
         else :
             nomActivite = self.dict_activites[IDactivite]["nom"]
-        self.ctrl_activite.text = "Activité : [b][color=a8ca2f]%s[/color][/b]" % nomActivite.encode("utf-8")
+        self.ctrl_activite.text = u"Activité : [b][color=a8ca2f]%s[/color][/b]" % nomActivite
 
     def on_bouton_selection_etat(self):
         from selection_etat import SelectionEtat
@@ -1227,7 +1224,7 @@ class Grille(Screen):
         
     def RechercherIndividu(self, IDinscription=None, IDindividu=None):
         """ Rechercher un individu depuis son IDindividu ou son IDinscription """
-        for numPage, listeInscriptions in self.dictLignesParPage.iteritems() :
+        for numPage, listeInscriptions in self.dictLignesParPage.items() :
             numLigne = 0
             for IDinscriptionTemp in listeInscriptions :
                 dictInscription = self.dictInscriptions[IDinscriptionTemp]
@@ -1240,8 +1237,7 @@ class Grille(Screen):
         
     def RechercherNomIndividu(self, texte=None):
         """ Rechercher une ligne d'après le nom de l'individu """
-        texte = texte.decode("utf-8")
-        for numPage, listeInscriptions in self.dictLignesParPage.iteritems() :
+        for numPage, listeInscriptions in self.dictLignesParPage.items() :
             numLigne = 0
             for IDinscription in listeInscriptions :
                 if texte.lower() in self.dictInscriptions[IDinscription]["nomComplet"].lower() :
@@ -1262,7 +1258,7 @@ class Grille(Screen):
     def RechercherPremiereLettre(self, lettre=None):
         """ Rechercher une ligne selon la première lettre du nom de l'individu """
         # Recherche si un nom commence par cette lettre
-        for numPage, listeInscriptions in self.dictLignesParPage.iteritems() :
+        for numPage, listeInscriptions in self.dictLignesParPage.items() :
             for IDinscription in listeInscriptions :
                 if self.dictInscriptions[IDinscription]["nomComplet"].lower().startswith(lettre.lower()) :
                     self.pageActuelle = numPage
@@ -1285,13 +1281,13 @@ class Grille(Screen):
             if categorie == "consommation" :
             
                 # Recherche dictConso initial
-                if self.dictConsoInitial.has_key(key) :
+                if key in self.dictConsoInitial:
                     dictConsoInitial = self.dictConsoInitial[key]
                 else :
                     dictConsoInitial = None
                 
                 # Recherche dictConso finale
-                if self.dictConso.has_key(key) :
+                if key in self.dictConso:
                     dictConsoFinale = self.dictConso[key]
                 else :
                     dictConsoFinale = None
@@ -1310,11 +1306,11 @@ class Grille(Screen):
         
       
         # Recherche des modifications des mémos journaliers
-        for key, dictMemo in self.dictMemos.iteritems():
+        for key, dictMemo in self.dictMemos.items():
             texte = dictMemo["texte"]
             IDmemo = dictMemo["IDmemo"]
             donnees = {"IDindividu" : key[0], "date" : key[1], "texte" : texte}
-            if self.dictMemosInitial.has_key(key) :
+            if key in self.dictMemosInitial:
                 if texte == "" and len(self.dictMemosInitial[key]["texte"])>0 :
                     listeActionsMemos.append(("supprimer", donnees))
                 else :
@@ -1327,7 +1323,7 @@ class Grille(Screen):
         def GetValeurs(listeChamps, dictConso):
             listeValeurs = []
             for nomChamp in listeChamps :
-                if dictConso.has_key(nomChamp) :
+                if nomChamp in dictConso:
                     listeValeurs.append(dictConso[nomChamp])
                 else :
                     listeValeurs.append(None)
@@ -1392,21 +1388,21 @@ class Grille(Screen):
     def on_bouton_afficher_totaux(self):
         dictResultats = {}
         # Unités
-        for (IDinscription, date, IDunite), dictConso in self.dictConso.iteritems() :
+        for (IDinscription, date, IDunite), dictConso in self.dictConso.items() :
             if dictConso["etat"] in ("reservation", "present"):
                 quantite = dictConso["quantite"]
                 if quantite == None :
                     quantite = 1
                 IDgroupe = dictConso["IDgroupe"]
-                if dictResultats.has_key(IDunite) == False :
+                if IDunite not in dictResultats:
                     dictResultats[IDunite] = {}
-                if dictResultats[IDunite].has_key(IDgroupe) == False :
+                if IDgroupe not in dictResultats[IDunite]:
                     dictResultats[IDunite][IDgroupe] = 0
                 dictResultats[IDunite][IDgroupe] += quantite
         
         # Recherche des noms de groupes
         listeGroupes = []
-        for IDgroupe, dictGroupe in self.dictGroupes.iteritems() :
+        for IDgroupe, dictGroupe in self.dictGroupes.items() :
             listeGroupes.append((dictGroupe["ordre"], IDgroupe, dictGroupe["nom"]))
         listeGroupes.sort() 
         
@@ -1427,8 +1423,8 @@ class Grille(Screen):
             totalLigne = 0
             for ordre, IDgroupe, nomGroupe in listeGroupes :
                 valeur = 0
-                if dictResultats.has_key(IDunite) :
-                    if dictResultats[IDunite].has_key(IDgroupe) :
+                if IDunite in dictResultats:
+                    if IDgroupe in dictResultats[IDunite]:
                         valeur = dictResultats[IDunite][IDgroupe]
                 ligne.append(valeur)
                 totalLigne += valeur

@@ -68,12 +68,13 @@ Builder.load_string("""
 
 
 class SaisieMdp(Popup):
-    ctrl_texte = ObjectProperty() 
-    def __init__(self, *args, **kwargs):
-        super(Popup, self).__init__(*args, **kwargs)	
-        self.bind(on_dismiss=self.on_dismiss)
+    ctrl_texte = ObjectProperty()
+
+    def __init__(self, **kwargs):
         self.callback = kwargs.pop("callback", None)
         self.code_page = kwargs.pop("code_page", None)
+        super(Popup, self).__init__(**kwargs)
+        self.bind(on_dismiss=self.on_dismiss)
         self.ctrl_texte.focus = True
     
     def Rechercher(self, texte=""):
@@ -88,14 +89,17 @@ class SaisieMdp(Popup):
         
 class MyApp(App):
     def build(self):
-        # Génération du popup            
+        b = Button(on_press=self.show_popup, text="Afficher Popup")
+        return b
+
+    def show_popup(self, b):
         popup = SaisieMdp(title="Saisissez votre mot de passe utilisateur", callback=self.Test, code_page=None)
         popup.open()    
         return popup
         
     def Test(self, texte=None, code_page=None):
-        print "mot de passe =", texte
-        print "code_page =", code_page
+        print("mot de passe =", texte)
+        print("code_page =", code_page)
         
 if __name__ == '__main__':
     MyApp().run()

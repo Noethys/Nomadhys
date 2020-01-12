@@ -109,7 +109,7 @@ class FicheIndividu(Screen):
         ctrl_label = Label(text="[color=000000][size=28][b]%s[/b][/size][/color]" % self.dictIndividu["nom_complet"], markup=True, size_hint_y=None)
         ctrl_box_haut.add_widget(ctrl_label)
         
-		# Photo
+        # Photo
         photo = self.dictIndividu["photo"]
         if photo == None :
             if self.dictIndividu["IDcivilite"] == 1 : photo = UTILS_Images.GetTextureFromFichier("images/homme.png")
@@ -120,21 +120,21 @@ class FicheIndividu(Screen):
         if photo != None :
             ctrl_image = Image(texture=photo, size_hint_x=None)
             ctrl_box_haut.add_widget(ctrl_image)
-		
+
         box_base.add_widget(ctrl_box_haut)
         
         # Onglets
         ctrl_onglets = TabbedPanel(do_default_tab=False, padding=10, tab_pos='top_left') # Vertical=left_bottom
         box_base.add_widget(ctrl_onglets)
-		
+
         liste_onglets = [
-            {"code":"messages", "titre":u"Messages"},
-            {"code":"identite", "titre":u"Identité"},
-            {"code":"liens", "titre":u"Liens"},
-            {"code":"coordonnees", "titre":u"Coordonnées"},
-            {"code":"scolarite", "titre":u"Scolarité"},
-            {"code":"activites", "titre":u"Activités"},
-            {"code":"medical", "titre":u"Médical"},
+            {"code": "messages", "titre": u"Messages"},
+            {"code": "identite", "titre": u"Identité"},
+            {"code": "liens", "titre": u"Liens"},
+            {"code": "coordonnees", "titre": u"Coordonnées"},
+            {"code": "scolarite", "titre": u"Scolarité"},
+            {"code": "activites", "titre": u"Activités"},
+            {"code": "medical", "titre": u"Médical"},
             ]
 
         for dictOnglet in liste_onglets :
@@ -144,7 +144,7 @@ class FicheIndividu(Screen):
             ctrl_onglets.add_widget(onglet)
 
         # Barre d'état
-        grid = GridLayout(cols=3, row=1, row_force_default=True, row_default_height=30, spacing=(5, 5), padding=10, size_hint=(1, None), height=50)
+        grid = GridLayout(cols=3, rows=1, row_force_default=True, row_default_height=30, spacing=(5, 5), padding=10, size_hint=(1, None), height=50)
         grid.canvas.before.add(Color(0.128, 0.128, 0.128))
 
         def redraw(self, args):
@@ -164,7 +164,7 @@ class FicheIndividu(Screen):
 
 
     def GetInfo(self, champ=""):
-        if self.dictInfosIndividu.has_key(champ) :
+        if champ in self.dictInfosIndividu:
             return self.dictInfosIndividu[champ]
         return ""
 

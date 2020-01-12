@@ -236,8 +236,8 @@ Builder.load_string("""
 """)
 
 class BoutonHorloge(Button):
-    def __init__(self, *args, **kwargs):
-        super(BoutonHorloge, self).__init__(*args, **kwargs)		
+    def __init__(self, **kwargs):
+        super(BoutonHorloge, self).__init__(**kwargs)
 
 
 
@@ -248,13 +248,14 @@ class DetailConso(Popup):
     spinner_groupe = ObjectProperty() 
     etat = StringProperty() 
     
-    def __init__(self, *args, **kwargs):
-        super(Popup, self).__init__(*args, **kwargs)
+    def __init__(self, **kwargs):
         self.callback = kwargs.pop("callback", None)
         self.dictConso = kwargs.pop("dictConso", None)
         self.typeAction = kwargs.pop("typeAction", None)
         self.grille = kwargs.pop("grille", None)
-        
+
+        super(Popup, self).__init__(**kwargs)
+
         # Importation des données
         if self.dictConso != None :
             
@@ -291,7 +292,7 @@ class DetailConso(Popup):
             # Remplissage du contrôle Groupe
             self.liste_groupes = []
             nomGroupeSelection = None
-            for IDgroupe, dictGroupe in self.grille.dictGroupes.iteritems() :
+            for IDgroupe, dictGroupe in self.grille.dictGroupes.items() :
                 self.liste_groupes.append((dictGroupe["ordre"], dictGroupe["nom"], IDgroupe))
                 if IDgroupe == self.dictConso["IDgroupe"] :
                     nomGroupeSelection = dictGroupe["nom"]
@@ -362,7 +363,10 @@ class DetailConso(Popup):
         
 class MyApp(App):
     def build(self):
-        # Génération du popup            
+        b = Button(on_press=self.show_popup, text="Afficher Popup")
+        return b
+
+    def show_popup(self, b):
         popup = DetailConso(callback=self.test, typeAction="ajouter", dictConso=None, grille=None)
         popup.open()    
         return popup
