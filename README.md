@@ -18,7 +18,7 @@ Pour découvrir comment installer Kivy, consultez le site http://kivy.org.
 Dépendances
 ------------------
 
-- Kivy 1.9.0+ (http://kivy.org/#download)
-- PyCrypto (http://pypi.python.org/pypi/pycrypto)
-- Twisted (http://pypi.python.org/pypi/Twisted)
-- Zope Interface (http://pypi.python.org/pypi/zope.interface/)
+- Kivy 1.9.0+ 
+- PyCryptodrome
+- Twisted
+- Pillow
