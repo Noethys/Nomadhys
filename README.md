@@ -19,6 +19,6 @@ Dépendances
 ------------------
 
 - Kivy 1.9.0+ 
-- PyCryptodrome
+- PyCryptodome
 - Twisted
 - Pillow
