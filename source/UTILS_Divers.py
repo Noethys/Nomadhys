@@ -11,10 +11,11 @@
 
 from kivy.app import App
 from kivy.logger import Logger
+import os
 
 def GetRepData():
     a = App()
-    rep = a.user_data_dir + "nomadhys/"
+    rep = os.path.join(a.user_data_dir, "nomadhys")
     del a
     return rep
 
