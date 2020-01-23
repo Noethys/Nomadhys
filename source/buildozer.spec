@@ -36,7 +36,7 @@ version.filename = %(source.dir)s/main.py
 
 # (list) Application requirements
 # comma seperated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,sqlite3,pillow,pycryptodome,docutils,twisted
+requirements = python3,kivy,sqlite3,pycryptodome,docutils,twisted
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -88,7 +88,7 @@ fullscreen = 0
 android.permissions = INTERNET,WRITE_EXTERNAL_STORAGE
 
 # (int) Android API to use
-#android.api = 19
+android.api = 28
 
 # (int) Minimum API required
 #android.minapi = 9
