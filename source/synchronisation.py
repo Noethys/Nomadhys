@@ -59,9 +59,9 @@ def GenerationFichierAenvoyer():
     config.Close() 
     
     # Génération des noms de fichiers
-    nomFichierData = UTILS_Divers.GetRepData() + "actions_%s.dat" % IDfichier
+    nomFichierData = os.path.join(UTILS_Divers.GetRepData(), "actions_%s.dat" % IDfichier)
     horodatage = time.strftime('%Y%m%d%H%M%S', time.localtime())
-    nomFichierActions = repertoire + "actions_%s_%s%s" % (IDfichier, horodatage, EXTENSION_DECRYPTE)
+    nomFichierActions = os.path.join(repertoire, "actions_%s_%s%s" % (IDfichier, horodatage, EXTENSION_DECRYPTE))
     
     # Vérifie qu'un fichier Actions existe
     if os.path.isfile(nomFichierData) == False :
@@ -157,7 +157,7 @@ class Echo(protocol.Protocol):
                         self.screen.EcritLog(u"Aucun fichier disponible sur le serveur")
                         return
     
-                    nomFinal = UTILS_Divers.GetRepData() + nomInitial
+                    nomFinal = os.path.join(UTILS_Divers.GetRepData(), nomInitial)
                     self.screen.EcritLog(u"Ok pour recevoir le fichier %s de taille %s" % (nomInitial, sizeof_fmt(tailleFichier)))
                     fichier = open(nomFinal,"wb")
                     self.transport.write("pret_pour_reception".encode('utf-8'))
@@ -480,7 +480,7 @@ class Synchronisation(Screen):
                 for nomFichier in ftp.nlst() :
                     if nomFichier.startswith("data_%s" % IDfichier) and (nomFichier.endswith(EXTENSION_CRYPTE) or nomFichier.endswith(EXTENSION_DECRYPTE)) :
                         tailleFichier = ftp.size(nomFichier) 
-                        nomFichierFinal = UTILS_Divers.GetRepData() + nomFichier
+                        nomFichierFinal = os.path.join(UTILS_Divers.GetRepData(), nomFichier)
                         ftp.retrbinary("RETR %s" % nomFichier, open(nomFichierFinal, "wb").write) 
                         listeFichiersRecus.append((nomFichierFinal, tailleFichier))
                 ftp.quit()

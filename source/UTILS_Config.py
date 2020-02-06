@@ -52,7 +52,7 @@ LISTE_VALEURS = (
 class Config():
     def __init__(self):
         rep = UTILS_Divers.GetRepData()
-        self.nomFichier = rep + "config.cfg"
+        self.nomFichier = os.path.join(rep, "config.cfg")
         self.config = configparser.ConfigParser()
         self.dirty = False
         # Ouverture du fichier

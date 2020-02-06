@@ -89,7 +89,7 @@ class DB:
             config.Close() 
             if IDfichier != "" :
                 repertoire = UTILS_Divers.GetRepData()
-                nomFichier = "%s%s_%s.dat" % (repertoire, typeFichier, IDfichier)
+                nomFichier = os.path.join(repertoire, "%s_%s.dat" % (typeFichier, IDfichier))
             else :
                 self.echec = 1
         

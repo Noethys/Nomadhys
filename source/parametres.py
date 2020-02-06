@@ -288,7 +288,7 @@ class Popup_parametres(Popup):
         self.size_hint = (0.9, 0.9)
         
         config = ConfigParser()
-        config.read(UTILS_Divers.GetRepData() + "config.cfg")
+        config.read(os.path.join(UTILS_Divers.GetRepData(), "config.cfg"))
 
         self.settings = Settings()
         self.settings.register_type('password', SettingPassword)
