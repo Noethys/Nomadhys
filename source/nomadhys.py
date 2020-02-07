@@ -37,9 +37,10 @@ except:
 import GestionDB
 import UTILS_Images
 import UTILS_Config
+import UTILS_Divers
 import os
 import sys
-
+import shutil
 
 runpath = os.path.dirname(os.path.realpath(sys.argv[0]))
 os.chdir(runpath)
@@ -69,9 +70,16 @@ class Nomadhys(App):
     
     def build(self):
         self.title = "Nomadhys"
-        Logger.info('Application: Repertoire user_data_dir = %s' % self.user_data_dir )
+        Logger.info('Application: Repertoire user_data_dir = %s' % self.user_data_dir)
         
-        
+        # Deplacement de fichiers si besoin
+        for fichier in os.listdir(self.user_data_dir):
+            for prefixe in ("nomadhysactions", "nomadhysconfig", "nomadhysdata"):
+                if fichier.startswith(prefixe):
+                    nouveaufichier = os.path.join(UTILS_Divers.GetRepData(), fichier.replace("nomadhys", ""))
+                    Logger.info("Deplacement du fichier %s -> %s" % (fichier, nouveaufichier))
+                    shutil.move(os.path.join(self.user_data_dir, fichier), nouveaufichier)
+
         # Config
         config = UTILS_Config.Config()
         

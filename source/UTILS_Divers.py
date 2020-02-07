@@ -16,6 +16,9 @@ import os
 def GetRepData():
     a = App()
     rep = os.path.join(a.user_data_dir, "nomadhys")
+    if not os.path.isdir(rep):
+        Logger.info("Creation du repertoire %s" % rep)
+        os.mkdir(rep)
     del a
     return rep
 
