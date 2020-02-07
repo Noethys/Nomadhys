@@ -103,7 +103,7 @@ class Echo(protocol.Protocol):
                 self.screen.EcritLog(u"Erreur : Aucun fichier à générer")
                 return
             tailleFichier = os.path.getsize(self.nomFichierAenvoyer) 
-            nomFichier = self.nomFichierAenvoyer.replace(UTILS_Divers.GetRepData(), "")
+            nomFichier = os.path.basename(self.nomFichierAenvoyer)
             # Récupération du nom de l'appareil
             config = UTILS_Config.Config()
             nom_appareil = config.Lire(section="general", option="nom_appareil", defaut="")
@@ -530,7 +530,7 @@ class Synchronisation(Screen):
         self.ReceptionFichier(nomFichier)
     
     def SauverFichier(self, chemin="", nomFichier=""):
-        nouveauFichier = chemin + nomFichier.replace(UTILS_Divers.GetRepData(), "")
+        nouveauFichier = os.path.join(chemin, os.path.basename(nomFichier))
         if nouveauFichier != nomFichier :
             shutil.copyfile(nomFichier, nouveauFichier)
             self.EcritLog(u"Fichier copié avec succès vers '%s'" % chemin)
@@ -572,8 +572,7 @@ class Synchronisation(Screen):
         fichierZip = zipfile.ZipFile(nouveauCheminFichier, "r")
         buffer = fichierZip.read("database.dat")
         nomFichierFinal = nouveauCheminFichier.replace(EXTENSION_DECRYPTE, ".dat")
-        #nomFichierFinal = nomFichierFinal.replace("temp/", "data/")
-        
+
         f = open(nomFichierFinal, "wb")
         f.write(buffer)
         f.close()
