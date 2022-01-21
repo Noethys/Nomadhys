@@ -374,7 +374,8 @@ class SelectionFiltre(Popup):
         req = """SELECT IDclasse, classes.nom, date_debut, date_fin, niveaux, classes.IDecole, ecoles.nom
         FROM classes 
         LEFT JOIN ecoles ON ecoles.IDecole = classes.IDecole
-        ORDER BY ecoles.nom;"""
+        WHERE date_debut<='%s' AND date_fin>='%s'
+        ORDER BY ecoles.nom, date_debut;""" % (self.date_fin, self.date_debut)
         DB.ExecuterReq(req)
         liste_classes = DB.ResultatReq()
         DB.Close() 
@@ -384,27 +385,23 @@ class SelectionFiltre(Popup):
         dictTemp = {}
         index = 0
         for IDclasse, nom, date_debut, date_fin, niveaux, IDecole, nom_ecole in liste_classes :
-            date_debut = UTILS_Dates.DateEngFr(date_debut)
-            date_fin = UTILS_Dates.DateEngFr(date_fin)
             niveaux = UTILS_Divers.ConvertStrToListe(niveaux)
             ordres = []
             for IDniveau in niveaux :
                 ordres.append(dict_niveaux[IDniveau]["ordre"])
             ordres.sort()
-            dictClasse = {"idclasse":IDclasse, "nom":nom, "nom_ecole":nom_ecole, "niveaux":niveaux,
-                "label":nom, "date_debut":date_debut, "date_fin":date_fin, "IDecole":IDecole}
+            dictClasse = {
+                "idclasse": IDclasse, "nom": nom, "nom_ecole": nom_ecole, "niveaux": niveaux,
+                "label": nom, "date_debut": UTILS_Dates.DateEngFr(date_debut), "date_fin": UTILS_Dates.DateEngFr(date_fin), "IDecole": IDecole,
+            }
             self.dictClasses[IDclasse] = dictClasse
-            ordres.insert(0, IDecole)
-            dictTemp[tuple(ordres)] = dictClasse
+            key_tri = (IDecole, date_debut, tuple(ordres), IDclasse)
+            dictTemp[key_tri] = dictClasse
         index += 1
 
         keys = list(dictTemp)
         keys.sort()
-
-        data = []
-        for key in keys:
-            data.append(dictTemp[key])
-        self.ctrl_classes.data = data
+        self.ctrl_classes.data = [dictTemp[key] for key in keys]
 
     def OnSelectionStandard(self, inst, val):
         if len(val) > 0 :
