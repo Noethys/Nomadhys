@@ -138,7 +138,7 @@ class FicheIndividu(Screen):
             ]
 
         for dictOnglet in liste_onglets :
-            onglet = TabbedPanelItem(id=dictOnglet["code"], text=dictOnglet["titre"])
+            onglet = TabbedPanelItem(text=dictOnglet["titre"])
             doc = RstDocument(text=self.GetTexteOnglet(dictOnglet["code"]))
             onglet.add_widget(doc)
             ctrl_onglets.add_widget(onglet)
