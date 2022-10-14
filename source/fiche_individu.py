@@ -179,7 +179,7 @@ class FicheIndividu(Screen):
             for x in range(0, 10) :
                 texte = self.GetInfo("MESSAGE_%d_TEXTE" % x)
                 if texte != "" :
-                    texteInfos += u"%s [%s] : %s\n\n" % (self.GetInfo("MESSAGE_%d_DATE_PARUTION" % x), self.GetInfo("MESSAGE_%d_CATEGORIE") % x, texte)
+                    texteInfos += u"%s [%s] : %s\n\n" % (self.GetInfo("MESSAGE_%d_DATE_PARUTION" % x), self.GetInfo("MESSAGE_%d_CATEGORIE" % x), texte)
                     nbre += 1
                     
             # Pièces et cotisations
